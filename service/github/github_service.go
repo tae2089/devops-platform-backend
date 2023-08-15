@@ -2,16 +2,18 @@ package github
 
 import (
 	"context"
+	"sync"
+
 	"github.com/google/go-github/v53/github"
 	"github.com/tae2089/devops-platform-backend/config"
 	"github.com/tae2089/devops-platform-backend/domain"
 	"golang.org/x/oauth2"
-	"sync"
 )
 
 type GitService interface {
 	RegisterWebhookForJenkins(ctx context.Context, hookDto domain.RequestGithubWebhookDto) error
 	ModifyWebhookForJenkins(ctx context.Context, hookDto domain.RequestGithubWebhookDto) error
+	GetHooksForRepo(ctx context.Context, hookDto domain.RequestGithubWebhookDto) ([]*github.Hook, error)
 }
 
 var (
