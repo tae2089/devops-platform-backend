@@ -10,7 +10,8 @@ import (
 )
 
 type GitService interface {
-	RegisterWebhookforJenkins(ctx context.Context, hookDto domain.RegisterGithubWebhookDto) error
+	RegisterWebhookForJenkins(ctx context.Context, hookDto domain.RequestGithubWebhookDto) error
+	ModifyWebhookForJenkins(ctx context.Context, hookDto domain.RequestGithubWebhookDto) error
 }
 
 var (

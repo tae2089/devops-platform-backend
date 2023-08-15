@@ -16,14 +16,14 @@ var _ GitService = (*gitServiceImpl)(nil)
 
 // RegisterWebhookforJenkins is a function that registers a webhook in a GitHub repository for  Jenkins. Since we're using HTTPS, insecure_ssl is set to false.
 // Also, if at least one webhook is already registered, registration will fail.
-func (g gitServiceImpl) RegisterWebhookforJenkins(ctx context.Context, hookeDto domain.RegisterGithubWebhookDto) error {
-	err, _ := g.isExistWebhook(ctx, hookeDto.Owner, hookeDto.Repo)
+func (g gitServiceImpl) RegisterWebhookForJenkins(ctx context.Context, hookDto domain.RequestGithubWebhookDto) error {
+	err, _ := g.isExistWebhook(ctx, hookDto.Owner, hookDto.Repo)
 	if err != nil {
 		return err
 	}
-	hookUrl := fmt.Sprintf("%s/generic-webhook-trigger/invoke?token=%s", hookeDto.TargetUrl, hookeDto.Token)
-	_, _, err = g.client.Repositories.CreateHook(ctx, hookeDto.Owner, hookeDto.Repo, &github.Hook{
-		Name:   github.String(hookeDto.Repo),
+	hookUrl := fmt.Sprintf("%s/generic-webhook-trigger/invoke?token=%s", hookDto.TargetUrl, hookDto.Token)
+	_, _, err = g.client.Repositories.CreateHook(ctx, hookDto.Owner, hookDto.Repo, &github.Hook{
+		Name:   github.String(hookDto.Repo),
 		Active: github.Bool(true),
 		Events: []string{
 			"push",
@@ -34,6 +34,23 @@ func (g gitServiceImpl) RegisterWebhookforJenkins(ctx context.Context, hookeDto 
 			"insecure_ssl": github.Bool(false),
 		},
 	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (g gitServiceImpl) ModifyWebhookForJenkins(ctx context.Context, hookDto domain.RequestGithubWebhookDto) error {
+	_, id := g.isExistWebhook(ctx, hookDto.Owner, hookDto.Repo)
+	if id == nil {
+		return exception.NotFoundHooks
+	}
+	hook, _, err := g.client.Repositories.GetHook(ctx, hookDto.Owner, hookDto.Repo, *id)
+	if err != nil {
+		return err
+	}
+	hook.URL = github.String(hookDto.TargetUrl)
+	_, _, err = g.client.Repositories.EditHook(ctx, hookDto.Owner, hookDto.Repo, *id, hook)
 	if err != nil {
 		return err
 	}
