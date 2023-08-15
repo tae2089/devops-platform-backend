@@ -20,8 +20,6 @@
 
 ### SOLUTIONS
 
-### BEFORE CODE
-
-### AFTER CODE
+### CHANGE LOG
 
 ### ETC
