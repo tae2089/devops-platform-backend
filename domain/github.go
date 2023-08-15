@@ -1,6 +1,6 @@
 package domain
 
-type RegisterGithubWebhookDto struct {
+type RequestGithubWebhookDto struct {
 	Owner     string
 	Repo      string
 	Token     string
