@@ -15,6 +15,7 @@ type gitServiceImpl struct {
 
 var _ GitService = (*gitServiceImpl)(nil)
 
+// GetHooksForRepo
 func (g gitServiceImpl) GetHooksForRepo(ctx context.Context, hookDto domain.RequestGithubWebhookDto) ([]*github.Hook, error) {
 	//TODO implement me
 	hooks, _, err := g.client.Repositories.ListHooks(ctx, hookDto.Owner, hookDto.Repo, &github.ListOptions{})
@@ -31,7 +32,7 @@ func (g gitServiceImpl) RegisterWebhookForJenkins(ctx context.Context, hookDto d
 	if err != nil {
 		return err
 	}
-	hookUrl := fmt.Sprintf("%s/generic-webhook-trigger/invoke?token=%s", hookDto.TargetUrl, hookDto.Token)
+	hookURL := fmt.Sprintf("%s/generic-webhook-trigger/invoke?token=%s", hookDto.TargetUrl, hookDto.Token)
 	_, _, err = g.client.Repositories.CreateHook(ctx, hookDto.Owner, hookDto.Repo, &github.Hook{
 		Name:   github.String(hookDto.Repo),
 		Active: github.Bool(true),
@@ -40,7 +41,7 @@ func (g gitServiceImpl) RegisterWebhookForJenkins(ctx context.Context, hookDto d
 		},
 		Config: map[string]interface{}{
 			"content_type": "json",
-			"url":          github.String(hookUrl),
+			"url":          github.String(hookURL),
 			"insecure_ssl": github.Bool(false),
 		},
 	})
