@@ -40,6 +40,7 @@ func (g gitServiceImpl) RegisterWebhookForJenkins(ctx context.Context, hookDto d
 	return nil
 }
 
+// ModifyWebhookForJenkins is used to change the URL of a webhook. The data required in the request is the same as RegisterWebhookforJenkins.
 func (g gitServiceImpl) ModifyWebhookForJenkins(ctx context.Context, hookDto domain.RequestGithubWebhookDto) error {
 	_, id := g.isExistWebhook(ctx, hookDto.Owner, hookDto.Repo)
 	if id == nil {
