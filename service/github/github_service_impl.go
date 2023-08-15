@@ -3,6 +3,7 @@ package github
 import (
 	"context"
 	"fmt"
+
 	"github.com/google/go-github/v53/github"
 	"github.com/tae2089/devops-platform-backend/domain"
 	"github.com/tae2089/devops-platform-backend/exception"
@@ -13,6 +14,15 @@ type gitServiceImpl struct {
 }
 
 var _ GitService = (*gitServiceImpl)(nil)
+
+func (g gitServiceImpl) GetHooksForRepo(ctx context.Context, hookDto domain.RequestGithubWebhookDto) ([]*github.Hook, error) {
+	//TODO implement me
+	hooks, _, err := g.client.Repositories.ListHooks(ctx, hookDto.Owner, hookDto.Repo, &github.ListOptions{})
+	if err != nil {
+		return nil, err
+	}
+	return hooks, nil
+}
 
 // RegisterWebhookForJenkins is a function that registers a webhook in a GitHub repository for  Jenkins. Since we're using HTTPS, insecure_ssl is set to false.
 // Also, if at least one webhook is already registered, registration will fail.
