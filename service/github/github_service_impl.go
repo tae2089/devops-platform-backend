@@ -14,7 +14,7 @@ type gitServiceImpl struct {
 
 var _ GitService = (*gitServiceImpl)(nil)
 
-// RegisterWebhookforJenkins is a function that registers a webhook in a GitHub repository for  Jenkins. Since we're using HTTPS, insecure_ssl is set to false.
+// RegisterWebhookForJenkins is a function that registers a webhook in a GitHub repository for  Jenkins. Since we're using HTTPS, insecure_ssl is set to false.
 // Also, if at least one webhook is already registered, registration will fail.
 func (g gitServiceImpl) RegisterWebhookForJenkins(ctx context.Context, hookDto domain.RequestGithubWebhookDto) error {
 	err, _ := g.isExistWebhook(ctx, hookDto.Owner, hookDto.Repo)
@@ -40,7 +40,7 @@ func (g gitServiceImpl) RegisterWebhookForJenkins(ctx context.Context, hookDto d
 	return nil
 }
 
-// ModifyWebhookForJenkins is used to change the URL of a webhook. The data required in the request is the same as RegisterWebhookforJenkins.
+// ModifyWebhookForJenkins is used to change the URL of a webhook. The data required in the request is the same as RegisterWebhookForJenkins.
 func (g gitServiceImpl) ModifyWebhookForJenkins(ctx context.Context, hookDto domain.RequestGithubWebhookDto) error {
 	_, id := g.isExistWebhook(ctx, hookDto.Owner, hookDto.Repo)
 	if id == nil {
