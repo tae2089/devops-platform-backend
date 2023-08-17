@@ -14,6 +14,7 @@ type GitService interface {
 	RegisterWebhookForJenkins(ctx context.Context, hookDto domain.RequestGithubWebhookDto) error
 	ModifyWebhookForJenkins(ctx context.Context, hookDto domain.RequestGithubWebhookDto) error
 	GetHooksForRepo(ctx context.Context, hookDto domain.RequestGithubWebhookDto) ([]*github.Hook, error)
+	UploadFile(ctx context.Context, hookDto domain.RequestUploadFileDto) error
 }
 
 var (
@@ -21,7 +22,7 @@ var (
 	gitService GitService
 )
 
-func NewGitService(gitConfig config.Github) GitService {
+func NewGitService(gitConfig *config.Github) GitService {
 	if gitService == nil {
 		gitOnce.Do(func() {
 			ctx := context.Background()
