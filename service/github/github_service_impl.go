@@ -3,6 +3,7 @@ package github
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/google/go-github/v53/github"
 	"github.com/tae2089/devops-platform-backend/domain"
@@ -11,6 +12,37 @@ import (
 
 type gitServiceImpl struct {
 	client *github.Client
+}
+
+// UploadFile implements GitService.
+func (g gitServiceImpl) UploadFile(ctx context.Context, hookDto domain.RequestUploadFileDto) error {
+	content, _, _, err := g.client.Repositories.GetContents(ctx, hookDto.Owner, hookDto.Repo, hookDto.Path, nil)
+	isFound := true
+	if err != nil {
+		if err.(*github.ErrorResponse).Response.StatusCode != 404 {
+			return err
+		}
+		isFound = false
+	}
+	if isFound {
+		_, _, err = g.client.Repositories.UpdateFile(ctx, hookDto.Owner, hookDto.Repo, hookDto.Path, &github.RepositoryContentFileOptions{
+			Content: hookDto.Content,
+			Message: github.String("update file to repository"),
+			Branch:  github.String(hookDto.Branch),
+			SHA:     content.SHA,
+		})
+	} else {
+		_, _, err = g.client.Repositories.CreateFile(ctx, hookDto.Owner, hookDto.Repo, hookDto.Path, &github.RepositoryContentFileOptions{
+			Content: hookDto.Content,
+			Message: github.String("modify file to repository"),
+			Branch:  github.String(hookDto.Branch),
+		})
+	}
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
 }
 
 var _ GitService = (*gitServiceImpl)(nil)
