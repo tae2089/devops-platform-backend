@@ -14,53 +14,6 @@ type gitServiceImpl struct {
 	client *github.Client
 }
 
-// DeleteWebhook implements GitService.
-func (g gitServiceImpl) DeleteWebhook(ctx context.Context, hookDto domain.RequestGithubWebhookDto) error {
-	id, err := g.isExistWebhook(ctx, hookDto.Owner, hookDto.Repo)
-	if id == nil {
-		if err != nil {
-			return err
-		}
-		return exception.NotFoundHooks
-	}
-	_, err = g.client.Repositories.DeleteHook(ctx, hookDto.Owner, hookDto.Repo, *id)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-// UploadFile implements GitService.
-func (g gitServiceImpl) UploadFile(ctx context.Context, hookDto domain.RequestUploadFileDto) error {
-	content, _, _, err := g.client.Repositories.GetContents(ctx, hookDto.Owner, hookDto.Repo, hookDto.Path, nil)
-	isFound := true
-	if err != nil {
-		if err.(*github.ErrorResponse).Response.StatusCode != 404 {
-			return err
-		}
-		isFound = false
-	}
-	if isFound {
-		_, _, err = g.client.Repositories.UpdateFile(ctx, hookDto.Owner, hookDto.Repo, hookDto.Path, &github.RepositoryContentFileOptions{
-			Content: hookDto.Content,
-			Message: github.String("update file to repository"),
-			Branch:  github.String(hookDto.Branch),
-			SHA:     content.SHA,
-		})
-	} else {
-		_, _, err = g.client.Repositories.CreateFile(ctx, hookDto.Owner, hookDto.Repo, hookDto.Path, &github.RepositoryContentFileOptions{
-			Content: hookDto.Content,
-			Message: github.String("modify file to repository"),
-			Branch:  github.String(hookDto.Branch),
-		})
-	}
-	if err != nil {
-		log.Println(err)
-		return err
-	}
-	return nil
-}
-
 var _ GitService = (*gitServiceImpl)(nil)
 
 // GetHooksForRepo functions to output hooks stored in the repo.
@@ -115,6 +68,53 @@ func (g gitServiceImpl) ModifyWebhookForJenkins(ctx context.Context, hookDto dom
 	hook.URL = github.String(hookDto.TargetUrl)
 	_, _, err = g.client.Repositories.EditHook(ctx, hookDto.Owner, hookDto.Repo, *id, hook)
 	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// DeleteWebhook implements GitService.
+func (g gitServiceImpl) DeleteWebhook(ctx context.Context, hookDto domain.RequestGithubWebhookDto) error {
+	id, err := g.isExistWebhook(ctx, hookDto.Owner, hookDto.Repo)
+	if id == nil {
+		if err != nil {
+			return err
+		}
+		return exception.NotFoundHooks
+	}
+	_, err = g.client.Repositories.DeleteHook(ctx, hookDto.Owner, hookDto.Repo, *id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// UploadFile implements GitService.
+func (g gitServiceImpl) UploadFile(ctx context.Context, hookDto domain.RequestUploadFileDto) error {
+	content, _, _, err := g.client.Repositories.GetContents(ctx, hookDto.Owner, hookDto.Repo, hookDto.Path, nil)
+	isFound := true
+	if err != nil {
+		if err.(*github.ErrorResponse).Response.StatusCode != 404 {
+			return err
+		}
+		isFound = false
+	}
+	if isFound {
+		_, _, err = g.client.Repositories.UpdateFile(ctx, hookDto.Owner, hookDto.Repo, hookDto.Path, &github.RepositoryContentFileOptions{
+			Content: hookDto.Content,
+			Message: github.String("update file to repository"),
+			Branch:  github.String(hookDto.Branch),
+			SHA:     content.SHA,
+		})
+	} else {
+		_, _, err = g.client.Repositories.CreateFile(ctx, hookDto.Owner, hookDto.Repo, hookDto.Path, &github.RepositoryContentFileOptions{
+			Content: hookDto.Content,
+			Message: github.String("modify file to repository"),
+			Branch:  github.String(hookDto.Branch),
+		})
+	}
+	if err != nil {
+		log.Println(err)
 		return err
 	}
 	return nil
