@@ -14,6 +14,22 @@ type gitServiceImpl struct {
 	client *github.Client
 }
 
+// DeleteWebhook implements GitService.
+func (g gitServiceImpl) DeleteWebhook(ctx context.Context, hookDto domain.RequestGithubWebhookDto) error {
+	id, err := g.isExistWebhook(ctx, hookDto.Owner, hookDto.Repo)
+	if id == nil {
+		if err != nil {
+			return err
+		}
+		return exception.NotFoundHooks
+	}
+	_, err = g.client.Repositories.DeleteHook(ctx, hookDto.Owner, hookDto.Repo, *id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // UploadFile implements GitService.
 func (g gitServiceImpl) UploadFile(ctx context.Context, hookDto domain.RequestUploadFileDto) error {
 	content, _, _, err := g.client.Repositories.GetContents(ctx, hookDto.Owner, hookDto.Repo, hookDto.Path, nil)

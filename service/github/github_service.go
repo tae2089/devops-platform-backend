@@ -15,6 +15,7 @@ type GitService interface {
 	ModifyWebhookForJenkins(ctx context.Context, hookDto domain.RequestGithubWebhookDto) error
 	GetHooksForRepo(ctx context.Context, hookDto domain.RequestGithubWebhookDto) ([]*github.Hook, error)
 	UploadFile(ctx context.Context, hookDto domain.RequestUploadFileDto) error
+	DeleteWebhook(ctx context.Context, hookDto domain.RequestGithubWebhookDto) error
 }
 
 var (
