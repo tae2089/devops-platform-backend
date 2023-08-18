@@ -16,7 +16,7 @@ func Test_gitServiceImpl_UploadFile(t *testing.T) {
 	g := github.NewGitService(gitConfig)
 	t.Run("upload file", func(t *testing.T) {
 		t.Skip("")
-		hookDto := domain.RequestUploadFileDto{
+		hookDto := &domain.RequestUploadFileDto{
 			Owner:   "<GITUHB USER ID>",
 			Repo:    "<GITUH REPON NAME>",
 			Path:    "<FILE PATH>",
@@ -29,7 +29,7 @@ func Test_gitServiceImpl_UploadFile(t *testing.T) {
 
 	t.Run("not found file", func(t *testing.T) {
 		t.Skip("")
-		hookDto := domain.RequestUploadFileDto{
+		hookDto := &domain.RequestUploadFileDto{
 			Owner:   "<GITUHB USER ID>",
 			Repo:    "<GITUH REPON NAME>",
 			Path:    "<FILE PATH>",

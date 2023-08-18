@@ -11,11 +11,11 @@ import (
 )
 
 type GitService interface {
-	RegisterWebhookForJenkins(ctx context.Context, hookDto domain.RequestGithubWebhookDto) error
-	ModifyWebhookForJenkins(ctx context.Context, hookDto domain.RequestGithubWebhookDto) error
-	GetHooksForRepo(ctx context.Context, hookDto domain.RequestGithubWebhookDto) ([]*github.Hook, error)
-	UploadFile(ctx context.Context, hookDto domain.RequestUploadFileDto) error
-	DeleteWebhook(ctx context.Context, hookDto domain.RequestGithubWebhookDto) error
+	RegisterWebhookForJenkins(ctx context.Context, hookDto *domain.RequestGithubWebhookDto) error
+	ModifyWebhookForJenkins(ctx context.Context, hookDto *domain.RequestGithubWebhookDto) error
+	GetHooksForRepo(ctx context.Context, hookDto *domain.RequestGithubWebhookDto) ([]*github.Hook, error)
+	UploadFile(ctx context.Context, hookDto *domain.RequestUploadFileDto) error
+	DeleteWebhook(ctx context.Context, hookDto *domain.RequestGithubWebhookDto) error
 }
 
 var (
