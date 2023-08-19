@@ -21,9 +21,15 @@ type Jenkins struct {
 	PassWord string `env:"JENKINS_PASSWORD,required"`
 }
 
+type SlackBot struct {
+	AccessToken string `env:"SLACK_BOT_ACCESS_TOKEN,required"`
+	SecretToken string `env:"SLACK_BOT_SECRET_TOKEN,required"`
+}
+
 var (
-	githubConfig  = &Github{}
-	jenkinsConfig = &Jenkins{}
+	githubConfig   = &Github{}
+	jenkinsConfig  = &Jenkins{}
+	slackBotConfig = &SlackBot{}
 )
 
 func init() {
@@ -46,6 +52,11 @@ func init() {
 	if err := env.Parse(jenkinsConfig); err != nil {
 		panic(err)
 	}
+
+	if err := env.Parse(slackBotConfig); err != nil {
+		panic(err)
+	}
+
 }
 
 func getProjectDir() string {
@@ -61,4 +72,8 @@ func GetGithubConfig() *Github {
 
 func GetJenkinsConfig() *Jenkins {
 	return jenkinsConfig
+}
+
+func GetSlackBotConfig() *SlackBot {
+	return slackBotConfig
 }
