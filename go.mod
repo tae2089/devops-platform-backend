@@ -6,6 +6,7 @@ require github.com/stretchr/testify v1.8.4
 
 require (
 	github.com/ProtonMail/go-crypto v0.0.0-20230217124315-7d5c6f04bbb8 // indirect
+	github.com/bndr/gojenkins v1.1.0 // indirect
 	github.com/bytedance/sonic v1.10.0 // indirect
 	github.com/caarlos0/env v3.5.0+incompatible // indirect
 	github.com/caarlos0/env/v9 v9.0.0 // indirect
