@@ -15,7 +15,16 @@ type Github struct {
 	Token string `env:"GITHUB_TOKEN,required"`
 }
 
-var githubConfig = &Github{}
+type Jenkins struct {
+	URL      string `env:"JENKINS_URL,required"`
+	User     string `env:"JENKINS_USER,required"`
+	PassWord string `env:"JENKINS_PASSWORD,required"`
+}
+
+var (
+	githubConfig  = &Github{}
+	jenkinsConfig = &Jenkins{}
+)
 
 func init() {
 
@@ -34,6 +43,9 @@ func init() {
 	if err := env.Parse(githubConfig); err != nil {
 		fmt.Printf("err: %+v\n", err)
 	}
+	if err := env.Parse(jenkinsConfig); err != nil {
+		panic(err)
+	}
 }
 
 func getProjectDir() string {
@@ -45,4 +57,8 @@ func getProjectDir() string {
 
 func GetGithubConfig() *Github {
 	return githubConfig
+}
+
+func GetJenkinsConfig() *Jenkins {
+	return jenkinsConfig
 }
