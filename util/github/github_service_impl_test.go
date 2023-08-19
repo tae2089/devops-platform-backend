@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/tae2089/devops-platform-backend/config"
 	"github.com/tae2089/devops-platform-backend/domain"
-	"github.com/tae2089/devops-platform-backend/service/github"
+	"github.com/tae2089/devops-platform-backend/util/github"
 )
 
 func Test_gitServiceImpl_UploadFile(t *testing.T) {
