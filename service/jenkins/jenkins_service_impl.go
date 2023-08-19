@@ -21,10 +21,16 @@ func (j *jenkinsServiceImpl) CreateJob(jobName, folderName, content *string) (*g
 }
 
 // UpdateJob implements JenkinsService.
-func (j *jenkinsServiceImpl) UpdateJob(ctx context.Context, jobName, folderName, content *string) (*gojenkins.Job, error) {
-	jobPath := *folderName + "/" + *jobName
-	_ = j.jenkins.UpdateJob(ctx, jobPath, *content)
-	return nil, nil
+func (j *jenkinsServiceImpl) UpdateJob(ctx context.Context, jobName, folderName, content *string) error {
+	job, err := j.jenkins.GetJob(ctx, *jobName, *folderName)
+	if err != nil {
+		return err
+	}
+	err = job.UpdateConfig(ctx, *content)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // DeleteJob implements JenkinsService.

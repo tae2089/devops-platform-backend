@@ -9,7 +9,7 @@ import (
 
 type JenkinsService interface {
 	CreateJob(jobName, folderName, content *string) (*gojenkins.Job, error)
-	UpdateJob(ctx context.Context, jobName, folderName, content *string) (*gojenkins.Job, error)
+	UpdateJob(ctx context.Context, jobName, folderName, content *string) error
 	DeleteJob(ctx context.Context, jobName, folderName *string) error
 }
 
