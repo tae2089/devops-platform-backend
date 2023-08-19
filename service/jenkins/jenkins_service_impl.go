@@ -26,3 +26,16 @@ func (j *jenkinsServiceImpl) UpdateJob(ctx context.Context, jobName, folderName,
 	_ = j.jenkins.UpdateJob(ctx, jobPath, *content)
 	return nil, nil
 }
+
+// DeleteJob implements JenkinsService.
+func (j *jenkinsServiceImpl) DeleteJob(ctx context.Context, jobName *string, folderName *string) error {
+	job, err := j.jenkins.GetJob(ctx, *jobName, *folderName)
+	if err != nil {
+		return err
+	}
+	_, err = job.Delete(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}

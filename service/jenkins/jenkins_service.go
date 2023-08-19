@@ -10,6 +10,7 @@ import (
 type JenkinsService interface {
 	CreateJob(jobName, folderName, content *string) (*gojenkins.Job, error)
 	UpdateJob(ctx context.Context, jobName, folderName, content *string) (*gojenkins.Job, error)
+	DeleteJob(ctx context.Context, jobName, folderName *string) error
 }
 
 func NewJenkinsService(jenkinsCOnfig *config.Jenkins) JenkinsService {
