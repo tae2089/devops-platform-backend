@@ -17,5 +17,12 @@ func (j *jenkinsServiceImpl) CreateJob(jobName, folderName, content *string) (*g
 	if err != nil {
 		return nil, err
 	}
-	return nil, err
+	return nil, nil
+}
+
+// UpdateJob implements JenkinsService.
+func (j *jenkinsServiceImpl) UpdateJob(ctx context.Context, jobName, folderName, content *string) (*gojenkins.Job, error) {
+	jobPath := *folderName + "/" + *jobName
+	_ = j.jenkins.UpdateJob(ctx, jobPath, *content)
+	return nil, nil
 }
