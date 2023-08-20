@@ -2,6 +2,7 @@ package jenkins
 
 import (
 	"context"
+	"log"
 
 	"github.com/bndr/gojenkins"
 	"github.com/tae2089/devops-platform-backend/config"
@@ -17,7 +18,9 @@ func NewJenkinsUtil(jenkinsConfig *config.Jenkins) JenkinsUtil {
 	jenkinsClient := gojenkins.CreateJenkins(nil, jenkinsConfig.URL, jenkinsConfig.User, jenkinsConfig.PassWord)
 	_, err := jenkinsClient.Init(context.Background())
 	if err != nil {
-		panic(err)
+		//TODO: change to handle
+		log.Println(err)
+		return nil
 	}
 	return &jenkinsUtilImpl{
 		jenkins: jenkinsClient,
