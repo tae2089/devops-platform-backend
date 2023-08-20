@@ -13,7 +13,7 @@ import (
 
 func Test_gitServiceImpl_UploadFile(t *testing.T) {
 	gitConfig := config.GetGithubConfig()
-	g := github.NewGitService(gitConfig)
+	g := github.NewGithubUtil(gitConfig)
 	t.Run("upload file", func(t *testing.T) {
 		t.Skip("")
 		hookDto := &domain.RequestUploadFileDto{

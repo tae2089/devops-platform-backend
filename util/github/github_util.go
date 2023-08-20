@@ -10,7 +10,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
-type GitService interface {
+type GithubUtil interface {
 	RegisterWebhookForJenkins(ctx context.Context, hookDto *domain.RequestGithubWebhookDto) error
 	ModifyWebhookForJenkins(ctx context.Context, hookDto *domain.RequestGithubWebhookDto) error
 	GetHooksForRepo(ctx context.Context, hookDto *domain.RequestGithubWebhookDto) ([]*github.Hook, error)
@@ -20,11 +20,11 @@ type GitService interface {
 
 var (
 	gitOnce    sync.Once
-	gitService GitService
+	githubUtil GithubUtil
 )
 
-func NewGitService(gitConfig *config.Github) GitService {
-	if gitService == nil {
+func NewGithubUtil(gitConfig *config.Github) GithubUtil {
+	if githubUtil == nil {
 		gitOnce.Do(func() {
 			ctx := context.Background()
 			ts := oauth2.StaticTokenSource(
@@ -32,10 +32,10 @@ func NewGitService(gitConfig *config.Github) GitService {
 			)
 			tc := oauth2.NewClient(ctx, ts)
 			client := github.NewClient(tc)
-			gitService = &gitServiceImpl{
+			githubUtil = &gitServiceImpl{
 				client,
 			}
 		})
 	}
-	return gitService
+	return githubUtil
 }
