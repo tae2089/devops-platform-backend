@@ -1,4 +1,4 @@
-package route
+package router
 
 import (
 	"time"
@@ -8,6 +8,6 @@ import (
 )
 
 func newHealthRouter(timeout time.Duration, group *gin.RouterGroup) {
-	healthRouter := handler.HealthHandler{}
+	healthRouter := &handler.HealthHandler{}
 	group.GET("/healthz", healthRouter.CheckHealth)
 }
