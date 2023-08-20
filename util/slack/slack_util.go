@@ -21,8 +21,8 @@ var (
 	slackUtil SlackUtil
 )
 
-func NewGitService(slackConfig *config.SlackBot) SlackUtil {
-	client := slack.New(slackConfig.SecretToken)
+func NewSlackUtil(slackConfig *config.SlackBot) SlackUtil {
+	client := slack.New(slackConfig.AccessToken)
 	if slackUtil == nil {
 		slackOnce.Do(func() {
 			slackUtil = &slackUtilImpl{
