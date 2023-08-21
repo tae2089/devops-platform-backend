@@ -8,27 +8,31 @@ import (
 	"github.com/tae2089/devops-platform-backend/config"
 )
 
-type SlackUtil interface {
+type Util interface {
 	OpenView(triggerId string, modalRequest slack.ModalViewRequest) error
 	SlashCommandParse(request *http.Request) (string, error)
 	GenerateModalRequest() slack.ModalViewRequest
 	GetUserProfile(userId string) (string, error)
 	GetUsersRealName(userId ...string) ([]string, error)
+	GetSlashCommandParse(request *http.Request) (slack.SlashCommand, error)
+	PostMessageWithBlocks(channelId string, blocks []slack.Block) error
+	GetDockerCodeBlocks(content string) []slack.Block
+	GetCallbackPayload(payload *string) (*slack.InteractionCallback, error)
 }
 
 var (
 	slackOnce sync.Once
-	slackUtil SlackUtil
+	util      Util
 )
 
-func NewSlackUtil(slackConfig *config.SlackBot) SlackUtil {
+func NewSlackUtil(slackConfig *config.SlackBot) Util {
 	client := slack.New(slackConfig.AccessToken)
-	if slackUtil == nil {
+	if util == nil {
 		slackOnce.Do(func() {
-			slackUtil = &slackUtilImpl{
+			util = &slackUtil{
 				client,
 			}
 		})
 	}
-	return slackUtil
+	return util
 }
