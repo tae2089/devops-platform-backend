@@ -68,3 +68,23 @@ func (s *slackUtilImpl) SlashCommandParse(request *http.Request) (string, error)
 	log.Println("userID", slackCommand.UserID)
 	return slackCommand.TriggerID, nil
 }
+
+// GetSlashCommandParse implements SlackUtil.
+func (s *slackUtilImpl) GetSlashCommandParse(request *http.Request) (slack.SlashCommand, error) {
+	slackCommand, err := slack.SlashCommandParse(request)
+	if err != nil {
+		return slack.SlashCommand{}, err
+	}
+	return slackCommand, nil
+}
+
+func (s *slackUtilImpl) GetDockerCodeBlocks(content string) []slack.Block {
+	headerText := slack.NewTextBlockObject("mrkdwn", "아래 코드를 Dockerfile에 입력해주세요.", false, false)
+	headerSection := slack.NewSectionBlock(headerText, nil, nil)
+	codeText := slack.NewTextBlockObject("mrkdwn", "```\n"+content+"\n```", false, false)
+	codeSection := slack.NewSectionBlock(codeText, nil, nil)
+	return []slack.Block{
+		headerSection,
+		codeSection,
+	}
+}
