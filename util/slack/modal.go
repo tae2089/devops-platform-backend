@@ -2,7 +2,7 @@ package slack
 
 import "github.com/slack-go/slack"
 
-func (s *slackUtilImpl) GenerateModalRequest() slack.ModalViewRequest {
+func (s *slackUtil) GenerateModalRequest() slack.ModalViewRequest {
 	// Create a ModalViewRequest with a header and two inputs
 	titleText := slack.NewTextBlockObject("plain_text", "점심 기록하기", false, false)
 	closeText := slack.NewTextBlockObject("plain_text", "취소", false, false)

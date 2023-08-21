@@ -8,7 +8,7 @@ import (
 	"github.com/tae2089/devops-platform-backend/util/slack"
 )
 
-func newSlackRouter(timeout time.Duration, slackRouter *gin.RouterGroup, slackUtil slack.SlackUtil) {
+func newSlackRouter(timeout time.Duration, slackRouter *gin.RouterGroup, slackUtil slack.Util) {
 	slackHandler := &handler.SlackHandler{
 		SlackUtil: slackUtil,
 	}

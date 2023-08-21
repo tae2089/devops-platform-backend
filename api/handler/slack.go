@@ -1,24 +1,20 @@
 package handler
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/slack-go/slack"
-	util "github.com/tae2089/devops-platform-backend/util/slack"
+	"github.com/tae2089/devops-platform-backend/util/slack"
 )
 
 type SlackHandler struct {
-	SlackUtil util.SlackUtil
+	SlackUtil slack.Util
 }
 
 func (s *SlackHandler) CallBack(c *gin.Context) {
-	var i slack.InteractionCallback
-
-	err := json.Unmarshal([]byte(c.PostForm("payload")), &i)
-
+	payload := c.PostForm("payload")
+	i, err := s.SlackUtil.GetCallbackPayload(&payload)
 	if err != nil {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
