@@ -12,6 +12,6 @@ func newJenkinsRouter(timeout time.Duration, group *gin.RouterGroup, jenkinsUsec
 	jenkinsHandler := &handler.JenkinsHandler{
 		JenkinsUsecase: jenkinsUsecase,
 	}
-	group.POST("/create/job", jenkinsHandler.CheckHealth)
+	group.POST("/job", jenkinsHandler.CreateJob)
 	// group.GET("/healthz", healthRouter.CheckHealth)
 }
