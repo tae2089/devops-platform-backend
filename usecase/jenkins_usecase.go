@@ -12,7 +12,7 @@ type JenkinsUsecase interface {
 	RegisterLunchPayment(request *http.Request) error
 }
 
-func NewJenkinsUsecase(slackUtil slack.SlackUtil, jenkinsUtil jenkins.JenkinsUtil, githubUtil github.GithubUtil) JenkinsUsecase {
+func NewJenkinsUsecase(slackUtil slack.Util, jenkinsUtil jenkins.JenkinsUtil, githubUtil github.GithubUtil) JenkinsUsecase {
 	return &jenkinsUsecaseImpl{
 		slackUtil,
 		jenkinsUtil,
