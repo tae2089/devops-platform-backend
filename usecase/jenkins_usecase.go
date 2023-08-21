@@ -10,9 +10,10 @@ import (
 
 type JenkinsUsecase interface {
 	RegisterLunchPayment(request *http.Request) error
+	RegistJob(request *http.Request) error
 }
 
-func NewJenkinsUsecase(slackUtil slack.Util, jenkinsUtil jenkins.JenkinsUtil, githubUtil github.GithubUtil) JenkinsUsecase {
+func NewJenkinsUsecase(slackUtil slack.Util, jenkinsUtil jenkins.Util, githubUtil github.GithubUtil) JenkinsUsecase {
 	return &jenkinsUsecaseImpl{
 		slackUtil,
 		jenkinsUtil,
