@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/tae2089/devops-platform-backend/util/docker"
@@ -34,13 +33,12 @@ func (d *dockerUsecase) GetDockerFile(request *http.Request) error {
 		templateData = "NONE"
 		break
 	}
-	log.Println(templateData)
 	blocks := d.slackUtil.GetDockerCodeBlocks(templateData)
-	err = d.slackUtil.PostMessageWithBlocks(slackCommand.ChannelID, blocks)
-	if err != nil {
-		return err
+	var channelId string = slackCommand.ChannelID
+	if slackCommand.ChannelName == "directmessage" {
+		channelId = slackCommand.UserID
 	}
-	return nil
+	return d.slackUtil.PostMessageWithBlocks(channelId, blocks)
 }
 
 var _ (DockerUsecase) = (*dockerUsecase)(nil)
