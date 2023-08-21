@@ -6,13 +6,13 @@ import (
 	"github.com/bndr/gojenkins"
 )
 
-type jenkinsUtilImpl struct {
+type utilImpl struct {
 	jenkins *gojenkins.Jenkins
 }
 
-var _ JenkinsUtil = (*jenkinsUtilImpl)(nil)
+var _ Util = (*utilImpl)(nil)
 
-func (j *jenkinsUtilImpl) CreateJob(jobName, folderName, content *string) (*gojenkins.Job, error) {
+func (j *utilImpl) CreateJob(jobName, folderName, content *string) (*gojenkins.Job, error) {
 	_, err := j.jenkins.CreateJobInFolder(context.Background(), *content, *jobName, *folderName)
 	if err != nil {
 		return nil, err
@@ -21,7 +21,7 @@ func (j *jenkinsUtilImpl) CreateJob(jobName, folderName, content *string) (*goje
 }
 
 // UpdateJob implements JenkinsService.
-func (j *jenkinsUtilImpl) UpdateJob(ctx context.Context, jobName, folderName, content *string) error {
+func (j *utilImpl) UpdateJob(ctx context.Context, jobName, folderName, content *string) error {
 	job, err := j.jenkins.GetJob(ctx, *jobName, *folderName)
 	if err != nil {
 		return err
@@ -34,7 +34,7 @@ func (j *jenkinsUtilImpl) UpdateJob(ctx context.Context, jobName, folderName, co
 }
 
 // DeleteJob implements JenkinsService.
-func (j *jenkinsUtilImpl) DeleteJob(ctx context.Context, jobName *string, folderName *string) error {
+func (j *utilImpl) DeleteJob(ctx context.Context, jobName *string, folderName *string) error {
 	job, err := j.jenkins.GetJob(ctx, *jobName, *folderName)
 	if err != nil {
 		return err

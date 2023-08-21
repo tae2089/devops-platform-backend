@@ -18,6 +18,7 @@ type Util interface {
 	PostMessageWithBlocks(channelId string, blocks []slack.Block) error
 	GetDockerCodeBlocks(content string) []slack.Block
 	GetCallbackPayload(payload *string) (*slack.InteractionCallback, error)
+	GenerateFrontDeployModal(projects ...string) slack.ModalViewRequest
 }
 
 var (
