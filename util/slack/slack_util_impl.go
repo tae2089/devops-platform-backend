@@ -8,13 +8,13 @@ import (
 	"github.com/slack-go/slack"
 )
 
-type slackUtilImpl struct {
+type slackUtil struct {
 	client *slack.Client
 }
 
-var _ SlackUtil = (*slackUtilImpl)(nil)
+var _ Util = (*slackUtil)(nil)
 
-func (s *slackUtilImpl) OpenView(triggerId string, modalRequest slack.ModalViewRequest) error {
+func (s *slackUtil) OpenView(triggerId string, modalRequest slack.ModalViewRequest) error {
 	_, err := s.client.OpenView(triggerId, modalRequest)
 	if err != nil {
 		log.Printf("Error opening view: %s", err)
@@ -23,7 +23,7 @@ func (s *slackUtilImpl) OpenView(triggerId string, modalRequest slack.ModalViewR
 	return nil
 }
 
-func (s *slackUtilImpl) PostMessage(channelId string, options ...slack.MsgOption) error {
+func (s *slackUtil) postMessage(channelId string, options ...slack.MsgOption) error {
 	_, _, err := s.client.PostMessage(channelId, options...)
 	if err != nil {
 		fmt.Printf(err.Error())
@@ -32,7 +32,7 @@ func (s *slackUtilImpl) PostMessage(channelId string, options ...slack.MsgOption
 	return nil
 }
 
-func (s *slackUtilImpl) GetUserProfile(userId string) (string, error) {
+func (s *slackUtil) GetUserProfile(userId string) (string, error) {
 	userProfile, err := s.client.GetUserProfile(
 		&slack.GetUserProfileParameters{
 			UserID: userId,
@@ -47,7 +47,7 @@ func (s *slackUtilImpl) GetUserProfile(userId string) (string, error) {
 	return userProfile.RealName, nil
 }
 
-func (s *slackUtilImpl) GetUsersRealName(userId ...string) ([]string, error) {
+func (s *slackUtil) GetUsersRealName(userId ...string) ([]string, error) {
 	users, err := s.client.GetUsersInfo(userId...)
 	userRealNameList := []string{}
 	if err != nil {
@@ -59,7 +59,7 @@ func (s *slackUtilImpl) GetUsersRealName(userId ...string) ([]string, error) {
 	return userRealNameList, nil
 }
 
-func (s *slackUtilImpl) SlashCommandParse(request *http.Request) (string, error) {
+func (s *slackUtil) SlashCommandParse(request *http.Request) (string, error) {
 
 	slackCommand, err := slack.SlashCommandParse(request)
 	if err != nil {
@@ -70,7 +70,7 @@ func (s *slackUtilImpl) SlashCommandParse(request *http.Request) (string, error)
 }
 
 // GetSlashCommandParse implements SlackUtil.
-func (s *slackUtilImpl) GetSlashCommandParse(request *http.Request) (slack.SlashCommand, error) {
+func (s *slackUtil) GetSlashCommandParse(request *http.Request) (slack.SlashCommand, error) {
 	slackCommand, err := slack.SlashCommandParse(request)
 	if err != nil {
 		return slack.SlashCommand{}, err
@@ -78,7 +78,7 @@ func (s *slackUtilImpl) GetSlashCommandParse(request *http.Request) (slack.Slash
 	return slackCommand, nil
 }
 
-func (s *slackUtilImpl) GetDockerCodeBlocks(content string) []slack.Block {
+func (s *slackUtil) GetDockerCodeBlocks(content string) []slack.Block {
 	headerText := slack.NewTextBlockObject("mrkdwn", "아래 코드를 Dockerfile에 입력해주세요.", false, false)
 	headerSection := slack.NewSectionBlock(headerText, nil, nil)
 	codeText := slack.NewTextBlockObject("mrkdwn", "```\n"+content+"\n```", false, false)
@@ -87,4 +87,13 @@ func (s *slackUtilImpl) GetDockerCodeBlocks(content string) []slack.Block {
 		headerSection,
 		codeSection,
 	}
+}
+
+// PostMessageWithBlocks implements SlackUtil.
+func (s *slackUtil) PostMessageWithBlocks(channelId string, blocks []slack.Block) error {
+	err := s.postMessage(channelId, slack.MsgOptionBlocks(blocks...))
+	if err != nil {
+		return err
+	}
+	return nil
 }
