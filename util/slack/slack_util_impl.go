@@ -1,6 +1,7 @@
 package slack
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -87,6 +88,16 @@ func (s *slackUtil) GetDockerCodeBlocks(content string) []slack.Block {
 		headerSection,
 		codeSection,
 	}
+}
+
+// GetCallbackPayload implements Util.
+func (*slackUtil) GetCallbackPayload(payload *string) (*slack.InteractionCallback, error) {
+	var InteractionCallback slack.InteractionCallback
+	err := json.Unmarshal([]byte(*payload), &InteractionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &InteractionCallback, nil
 }
 
 // PostMessageWithBlocks implements SlackUtil.

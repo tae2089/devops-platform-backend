@@ -17,6 +17,7 @@ type Util interface {
 	GetSlashCommandParse(request *http.Request) (slack.SlashCommand, error)
 	PostMessageWithBlocks(channelId string, blocks []slack.Block) error
 	GetDockerCodeBlocks(content string) []slack.Block
+	GetCallbackPayload(payload *string) (*slack.InteractionCallback, error)
 }
 
 var (
