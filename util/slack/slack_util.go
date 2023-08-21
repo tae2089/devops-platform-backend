@@ -14,6 +14,9 @@ type SlackUtil interface {
 	GenerateModalRequest() slack.ModalViewRequest
 	GetUserProfile(userId string) (string, error)
 	GetUsersRealName(userId ...string) ([]string, error)
+	GetSlashCommandParse(request *http.Request) (slack.SlashCommand, error)
+	PostMessage(channelId string, options ...slack.MsgOption) error
+	GetDockerCodeBlocks(content string) []slack.Block
 }
 
 var (
