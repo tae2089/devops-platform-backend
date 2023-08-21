@@ -1,13 +1,21 @@
 package docker
 
-func GetJava() string {
-	return dockerJava
+import "sync"
+
+type Util interface {
+	GetJava() string
+	GetGolang() string
+	GetJavaScript() string
 }
 
-func GetGolang() string {
-	return dockerGolang
-}
+var (
+	util Util
+	once sync.Once
+)
 
-func GetJavaScript() string {
-	return dockerNode
+func NewDockerUtil() Util {
+	once.Do(func() {
+		util = &dockerUtil{}
+	})
+	return util
 }
