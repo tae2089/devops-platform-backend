@@ -12,7 +12,7 @@ import (
 var _ (JenkinsUsecase) = (*jenkinsUsecaseImpl)(nil)
 
 type jenkinsUsecaseImpl struct {
-	slackUtil   slack.SlackUtil
+	slackUtil   slack.Util
 	jenkinsUtil jenkins.JenkinsUtil
 	githubUtil  github.GithubUtil
 }
