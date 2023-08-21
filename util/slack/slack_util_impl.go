@@ -2,7 +2,6 @@ package slack
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -27,7 +26,7 @@ func (s *slackUtil) OpenView(triggerId string, modalRequest slack.ModalViewReque
 func (s *slackUtil) postMessage(channelId string, options ...slack.MsgOption) error {
 	_, _, err := s.client.PostMessage(channelId, options...)
 	if err != nil {
-		fmt.Printf(err.Error())
+		log.Println(err)
 		return err
 	}
 	return nil
