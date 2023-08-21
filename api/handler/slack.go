@@ -24,6 +24,9 @@ func (s *SlackHandler) CallBack(c *gin.Context) {
 	case "/slash":
 		log.Println("check slash")
 		log.Println(i.User.ID)
+	case "/front-deploy":
+		log.Println("check slash")
+		log.Println(i.User.ID)
 	default:
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
