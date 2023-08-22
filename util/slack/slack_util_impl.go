@@ -42,8 +42,6 @@ func (s *slackUtil) GetUserProfile(userId string) (string, error) {
 		log.Println(err)
 		return "", err
 	}
-	log.Println(userProfile.RealName)
-	log.Println(userProfile.DisplayName)
 	return userProfile.RealName, nil
 }
 
@@ -80,6 +78,17 @@ func (s *slackUtil) GetSlashCommandParse(request *http.Request) (slack.SlashComm
 
 func (s *slackUtil) GetDockerCodeBlocks(content string) []slack.Block {
 	headerText := slack.NewTextBlockObject("mrkdwn", "아래 코드를 Dockerfile에 입력해주세요.", false, false)
+	headerSection := slack.NewSectionBlock(headerText, nil, nil)
+	codeText := slack.NewTextBlockObject("mrkdwn", "```\n"+content+"\n```", false, false)
+	codeSection := slack.NewSectionBlock(codeText, nil, nil)
+	return []slack.Block{
+		headerSection,
+		codeSection,
+	}
+}
+
+func (s *slackUtil) GetJenkinsJobResultBlocks(content string) []slack.Block {
+	headerText := slack.NewTextBlockObject("mrkdwn", "아래는 입력해주신 내용입니다.", false, false)
 	headerSection := slack.NewSectionBlock(headerText, nil, nil)
 	codeText := slack.NewTextBlockObject("mrkdwn", "```\n"+content+"\n```", false, false)
 	codeSection := slack.NewSectionBlock(codeText, nil, nil)

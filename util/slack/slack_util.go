@@ -19,6 +19,7 @@ type Util interface {
 	GetDockerCodeBlocks(content string) []slack.Block
 	GetCallbackPayload(payload *string) (*slack.InteractionCallback, error)
 	GenerateFrontDeployModal(projects ...string) slack.ModalViewRequest
+	GetJenkinsJobResultBlocks(content string) []slack.Block
 }
 
 var (
