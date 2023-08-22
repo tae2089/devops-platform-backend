@@ -13,7 +13,7 @@ type JenkinsUsecase interface {
 	RegistJob(request *http.Request) error
 }
 
-func NewJenkinsUsecase(slackUtil slack.Util, jenkinsUtil jenkins.Util, githubUtil github.GithubUtil) JenkinsUsecase {
+func NewJenkinsUsecase(slackUtil slack.Util, jenkinsUtil jenkins.Util, githubUtil github.Util) JenkinsUsecase {
 	return &jenkinsUsecaseImpl{
 		slackUtil,
 		jenkinsUtil,
