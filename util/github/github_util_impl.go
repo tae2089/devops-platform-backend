@@ -14,7 +14,7 @@ type gitServiceImpl struct {
 	client *github.Client
 }
 
-var _ GithubUtil = (*gitServiceImpl)(nil)
+var _ Util = (*gitServiceImpl)(nil)
 
 // GetHooksForRepo functions to output hooks stored in the repo.
 func (g *gitServiceImpl) GetHooksForRepo(ctx context.Context, hookDto *domain.RequestGithubWebhookDto) ([]*github.Hook, error) {

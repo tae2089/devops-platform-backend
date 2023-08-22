@@ -10,7 +10,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
-type GithubUtil interface {
+type Util interface {
 	RegisterWebhookForJenkins(ctx context.Context, hookDto *domain.RequestGithubWebhookDto) error
 	ModifyWebhookForJenkins(ctx context.Context, hookDto *domain.RequestGithubWebhookDto) error
 	GetHooksForRepo(ctx context.Context, hookDto *domain.RequestGithubWebhookDto) ([]*github.Hook, error)
@@ -20,10 +20,10 @@ type GithubUtil interface {
 
 var (
 	gitOnce    sync.Once
-	githubUtil GithubUtil
+	githubUtil Util
 )
 
-func NewGithubUtil(gitConfig *config.Github) GithubUtil {
+func NewGithubUtil(gitConfig *config.Github) Util {
 	if githubUtil == nil {
 		gitOnce.Do(func() {
 			ctx := context.Background()
