@@ -5,34 +5,34 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/tae2089/devops-platform-backend/util/slack"
+	"github.com/tae2089/devops-platform-backend/usecase"
 )
 
 type SlackHandler struct {
-	SlackUtil slack.Util
+	SlackUsecase usecase.SlackUsecase
 }
 
 func (s *SlackHandler) CallBack(c *gin.Context) {
 	payload := c.PostForm("payload")
-	i, err := s.SlackUtil.GetCallbackPayload(&payload)
+	i, err := s.SlackUsecase.GetCallbackPayload(&payload)
 	if err != nil {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
 	switch i.View.PrivateMetadata {
-	case "/slash":
+	case "/back-deploy":
 		log.Println("check slash")
 		log.Println(i.User.ID)
 	case "/front-deploy":
-		log.Println("check slash")
-		log.Println(i.User.ID)
+		err = s.SlackUsecase.RegistJenkinsFrontJob(i)
 	default:
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
 	if err != nil {
+		log.Println(err)
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
