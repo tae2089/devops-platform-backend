@@ -16,7 +16,7 @@ var _ (JenkinsUsecase) = (*jenkinsUsecaseImpl)(nil)
 type jenkinsUsecaseImpl struct {
 	slackUtil   slack.Util
 	jenkinsUtil jenkins.Util
-	githubUtil  github.GithubUtil
+	githubUtil  github.Util
 }
 
 // RegistFrontJob implements JenkinsUsecase.
@@ -28,7 +28,7 @@ func (j *jenkinsUsecaseImpl) RegistJob(request *http.Request) error {
 	var modalRequest goSlack.ModalViewRequest = goSlack.ModalViewRequest{}
 	switch slashCommand.Text {
 	case "front":
-		modalRequest = j.slackUtil.GenerateFrontDeployModal("bc-labs", "pet-i")
+		modalRequest = j.slackUtil.GenerateFrontDeployModal("test1", "test2", "test3")
 	case "back":
 		break
 	default:
