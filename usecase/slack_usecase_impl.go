@@ -1,11 +1,61 @@
 package usecase
 
-import "github.com/tae2089/devops-platform-backend/util/slack"
+import (
+	"github.com/slack-go/slack"
+	"github.com/tae2089/devops-platform-backend/domain"
+	"github.com/tae2089/devops-platform-backend/util/github"
+	"github.com/tae2089/devops-platform-backend/util/jenkins"
+	slackUtil "github.com/tae2089/devops-platform-backend/util/slack"
+)
 
 var _ (SlackUsecase) = (*slackUsecase)(nil)
 
 type slackUsecase struct {
-	slackUtil slack.Util
+	slackUtil   slackUtil.Util
+	githubUtil  github.Util
+	jenkinsUtil jenkins.Util
+}
+
+// RegistJenkinsFrontJob implements SlackUsecase.
+func (s *slackUsecase) RegistJenkinsFrontJob(callback *slack.InteractionCallback) error {
+	projectSelect := callback.View.State.Values["project selector"]["project_select"]
+	repositoryField := callback.View.State.Values["repository block"]["repository"]
+	branchField := callback.View.State.Values["branch block"]["branch"]
+	webhookField := callback.View.State.Values["webhook block"]["webhook"]
+	jenkinsFileField := callback.View.State.Values["jenkinsfile block"]["jenkinsfile"]
+	jenkinsJobField := callback.View.State.Values["jenkinsjob block"]["jenkinsjob"]
+	content := s.jenkinsUtil.GetJenkinsJobContent(repositoryField.Value, branchField.Value, projectSelect.SelectedOption.Value, webhookField.Value, jenkinsFileField.Value)
+	_, err := s.jenkinsUtil.CreateJob(&jenkinsJobField.Value, &projectSelect.SelectedOption.Value, &content)
+	if err != nil {
+		return err
+	}
+	responseJob := &domain.ResultMessageJenkinsJob{
+		Project:      projectSelect.SelectedOption.Value,
+		WebhookToken: webhookField.Value,
+		GitURL:       repositoryField.Value,
+		Branch:       branchField.Value,
+		FileName:     jenkinsFileField.Value,
+	}
+	channelID := callback.Channel.ID
+	if callback.Channel.Name == "" {
+		channelID = callback.User.ID
+	}
+
+	resultBlocks := s.slackUtil.GetJenkinsJobResultBlocks(responseJob.Write())
+	err = s.slackUtil.PostMessageWithBlocks(channelID, resultBlocks)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// GetCallbackPayload implements SlackUsecase.
+func (s *slackUsecase) GetCallbackPayload(payload *string) (*slack.InteractionCallback, error) {
+	i, err := s.slackUtil.GetCallbackPayload(payload)
+	if err != nil {
+		return nil, err
+	}
+	return i, nil
 }
 
 // func (j *jenkinsUsecaseImpl) SaveLunchPayment(i slack.InteractionCallback, token string) error {
