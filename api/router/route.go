@@ -30,7 +30,8 @@ func SetUp(timeout time.Duration, g *gin.Engine) {
 
 	slackRouter := g.Group("/slack")
 	slackRouter.Use(middleware.VerifySlack())
-	newSlackRouter(timeout, slackRouter, slackUtil)
+	slackUsecase := usecase.NewSlackUsecase(slackUtil, jenkinsUtil, githubUtil)
+	newSlackRouter(timeout, slackRouter, slackUsecase)
 
 	// health router setup
 	healthRouter := g.Group("/")
