@@ -79,13 +79,15 @@ func (s *slackUtil) GenerateFrontDeployModal(projects ...string) slack.ModalView
 
 	projectSelector := s.getSelectBlock("배포할 프로젝트를 선택해주세요?", "클릭하여 선택해주세요", "project_select", "project selector", false, options)
 	//github repository 입력하기
-	gitRepoPlainTextBlock := s.getPlainTextBlock("배포에 사용될 레포지토리를 입력해주세요.", "레포지토링명을 입력해주세요. ex) main, develop", "repository", "repository block")
+	gitRepoPlainTextBlock := s.getPlainTextBlock("배포에 사용될 레포지토리를 입력해주세요.", "레포지토링명을 입력해주세요. ex) devops-platform-backend", "repository", "repository block")
 	// // 브랜치명 입력하기
 	branchPlainTextBlock := s.getPlainTextBlock("배포에 사용될 브랜치를 입력해주세요.", "브랜치명을 입력해주세요. ex) main, develop", "branch", "branch block")
-	// // 배포 시 사용할 도메인 입력하기
-	domainPlainTextBlock := s.getPlainTextBlock("배포된 웹사이트에 사용할 도메인을 입력해주세요.", "사용하실 도메인을 입력해주세요. ex)www.example.com", "domain", "domain block")
-	// // certificate arn 입력하기
-	cetificateArnBlock := s.getPlainTextBlock("aws certificate arn을 입력해주세요.", "arn을 입력해주세요", "certificateArn", "certificate block")
+	// // 배포 시 사용할  github  webhook token
+	gitHookTokenTextBlock := s.getPlainTextBlock("배포에 사용할 webook token의 이름을 입력해주세요.", "webook token의 이름을 입력해주세요. ex)  demo-bucket", "webhook", "webhook block")
+	//jenkins file 입력하기
+	jenkinsFilePlainTextBlock := s.getPlainTextBlock("배포에 사용될 jenkins file을 입력해주세요.", " jenkinsfile을 입력해주세요. ex) jenkinsfile, Jenkinsfile", "jenkinsfile", "jenkinsfile block")
+	// job name 입력하기
+	jobNamePlainTextBlock := s.getPlainTextBlock("생성할 jenkins job 이름을 입력해주세요.", "jenkins job 이름을 입력해주세요.ex) jenkins-job-prd, jenkins-job", "jenkinsjob", "jenkinsjob block")
 
 	blocks := slack.Blocks{
 		BlockSet: []slack.Block{
@@ -93,12 +95,14 @@ func (s *slackUtil) GenerateFrontDeployModal(projects ...string) slack.ModalView
 			projectSelector,
 			gitRepoPlainTextBlock,
 			branchPlainTextBlock,
-			domainPlainTextBlock,
-			cetificateArnBlock,
+			gitHookTokenTextBlock,
+			jenkinsFilePlainTextBlock,
+			jobNamePlainTextBlock,
 		},
 	}
 	metadata := "/front-deploy"
 	modalRequest := s.createModalRequest(titleText, closeText, submitText, blocks, metadata)
+
 	return modalRequest
 }
 
@@ -131,16 +135,9 @@ func (s *slackUtil) getMarkdownBlock(text, placeholder, actionID, blockID string
 
 func (s *slackUtil) getSelectBlock(text, placeholder, actionID, blockID string, optional bool, options []*slack.OptionBlockObject) *slack.InputBlock {
 	selectText := slack.NewTextBlockObject(slack.PlainTextType, text, false, false)
-	selectPlaceholder := slack.NewTextBlockObject(slack.PlainTextType, placeholder, false, false)
+	// selectPlaceholder := slack.NewTextBlockObject(slack.PlainTextType, placeholder, false, false)
 	selectElement := slack.NewOptionsSelectBlockElement(slack.OptTypeStatic, nil, actionID, options...)
-	selector := slack.NewInputBlock(blockID, selectText, selectPlaceholder, selectElement)
-
-	// inviteeOption := slack.NewOptionsSelectBlockElement(slack.OptTypeStatic, nil, "invitee", options...)
-	// inviteeBlock := slack.NewInputBlock("invitee", inviteeText, nil, inviteeOption)
-
-	// inviteeText := slack.NewTextBlockObject(slack.PlainTextType, "Invitee from static list", false, false)
-	// inviteeOption := slack.NewOptionsSelectBlockElement(slack.OptTypeStatic, nil, "invitee", option_test...)
-	// inviteeBlock := slack.NewInputBlock("invitee", inviteeText, nil, inviteeOption)
+	selector := slack.NewInputBlock(blockID, selectText, nil, selectElement)
 	return selector
 }
 
