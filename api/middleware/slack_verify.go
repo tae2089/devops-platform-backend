@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"io"
 
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/slack-go/slack"
+	"github.com/tae2089/bob-logging/logger"
 	"github.com/tae2089/devops-platform-backend/config"
 )
 
@@ -16,7 +16,7 @@ func VerifySlack() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		err := verifySigningSecret(c.Request)
 		if err != nil {
-			log.Printf(err.Error())
+			logger.Error(err)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
@@ -26,13 +26,13 @@ func VerifySlack() gin.HandlerFunc {
 func verifySigningSecret(r *http.Request) error {
 	verifier, err := slack.NewSecretsVerifier(r.Header, config.GetSlackBotConfig().SecretToken)
 	if err != nil {
-		log.Println(err.Error())
+		logger.Error(err)
 		return err
 	}
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		log.Println(err.Error())
+		logger.Error(err)
 		return err
 	}
 	// Need to use r.Body again when unmarshalling SlashCommand and InteractionCallback
@@ -40,7 +40,7 @@ func verifySigningSecret(r *http.Request) error {
 
 	verifier.Write(body)
 	if err = verifier.Ensure(); err != nil {
-		log.Println(err.Error())
+		logger.Error(err)
 		return err
 	}
 

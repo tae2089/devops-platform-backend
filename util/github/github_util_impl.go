@@ -3,7 +3,8 @@ package github
 import (
 	"context"
 	"fmt"
-	"log"
+
+	"github.com/tae2089/bob-logging/logger"
 
 	"github.com/google/go-github/v53/github"
 	"github.com/tae2089/devops-platform-backend/domain"
@@ -114,7 +115,7 @@ func (g *gitServiceImpl) UploadFile(ctx context.Context, hookDto *domain.Request
 		})
 	}
 	if err != nil {
-		log.Println(err)
+		logger.Error(err)
 		return err
 	}
 	return nil

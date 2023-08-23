@@ -2,8 +2,9 @@ package domain
 
 import (
 	"bytes"
-	"log"
 	"text/template"
+
+	"github.com/tae2089/bob-logging/logger"
 )
 
 type JobTemplateWritable interface {
@@ -22,12 +23,12 @@ type JenkinsFrontFile struct {
 func (j *JenkinsFrontFile) Write() string {
 	tmpl, err := template.New("Create front deploy").Parse(frontJobFileTemplate)
 	if err != nil {
-		log.Println(err)
+		logger.Error(err)
 		return ""
 	}
 	var tpl bytes.Buffer
 	if err := tmpl.Execute(&tpl, j); err != nil {
-		log.Println(err)
+		logger.Error(err)
 		return ""
 	}
 	return tpl.String()
@@ -44,12 +45,12 @@ type JenkinsJob struct {
 func (j *JenkinsJob) Write() string {
 	tmpl, err := template.New("Create Job").Parse(jobTemplate)
 	if err != nil {
-		log.Println(err)
+		logger.Error(err)
 		return ""
 	}
 	var tpl bytes.Buffer
 	if err := tmpl.Execute(&tpl, j); err != nil {
-		log.Println(err)
+		logger.Error(err)
 		return ""
 	}
 	return tpl.String()
@@ -66,12 +67,12 @@ type ResultMessageJenkinsJob struct {
 func (r *ResultMessageJenkinsJob) Write() string {
 	tmpl, err := template.New("Create Job").Parse(registJobResultTemplate)
 	if err != nil {
-		log.Println(err)
+		logger.Error(err)
 		return ""
 	}
 	var tpl bytes.Buffer
 	if err := tmpl.Execute(&tpl, r); err != nil {
-		log.Println(err)
+		logger.Error(err)
 		return ""
 	}
 	return tpl.String()

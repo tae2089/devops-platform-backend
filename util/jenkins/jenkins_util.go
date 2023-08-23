@@ -2,9 +2,9 @@ package jenkins
 
 import (
 	"context"
-	"log"
 
 	"github.com/bndr/gojenkins"
+	"github.com/tae2089/bob-logging/logger"
 	"github.com/tae2089/devops-platform-backend/config"
 )
 
@@ -20,7 +20,7 @@ func NewJenkinsUtil(jenkinsConfig *config.Jenkins) Util {
 	jenkinsClient := gojenkins.CreateJenkins(nil, jenkinsConfig.URL, jenkinsConfig.User, jenkinsConfig.PassWord)
 	_, err := jenkinsClient.Init(context.Background())
 	if err != nil {
-		log.Println(err)
+		logger.Error(err)
 		return nil
 	}
 	return &utilImpl{

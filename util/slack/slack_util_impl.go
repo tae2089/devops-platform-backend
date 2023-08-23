@@ -2,10 +2,10 @@ package slack
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/slack-go/slack"
+	"github.com/tae2089/bob-logging/logger"
 )
 
 type slackUtil struct {
@@ -17,7 +17,7 @@ var _ Util = (*slackUtil)(nil)
 func (s *slackUtil) OpenView(triggerId string, modalRequest slack.ModalViewRequest) error {
 	_, err := s.client.OpenView(triggerId, modalRequest)
 	if err != nil {
-		log.Printf("Error opening view: %s", err)
+		logger.Error(err)
 		return err
 	}
 	return nil
@@ -26,7 +26,7 @@ func (s *slackUtil) OpenView(triggerId string, modalRequest slack.ModalViewReque
 func (s *slackUtil) postMessage(channelId string, options ...slack.MsgOption) error {
 	_, _, err := s.client.PostMessage(channelId, options...)
 	if err != nil {
-		log.Println(err)
+		logger.Error(err)
 		return err
 	}
 	return nil
@@ -39,7 +39,7 @@ func (s *slackUtil) GetUserProfile(userId string) (string, error) {
 		},
 	)
 	if err != nil {
-		log.Println(err)
+		logger.Error(err)
 		return "", err
 	}
 	return userProfile.RealName, nil
@@ -63,7 +63,7 @@ func (s *slackUtil) SlashCommandParse(request *http.Request) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	log.Println("userID", slackCommand.UserID)
+	logger.Info(slackCommand.TriggerID)
 	return slackCommand.TriggerID, nil
 }
 

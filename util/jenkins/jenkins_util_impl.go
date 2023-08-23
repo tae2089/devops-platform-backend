@@ -3,7 +3,8 @@ package jenkins
 import (
 	"context"
 	"fmt"
-	"log"
+
+	"github.com/tae2089/bob-logging/logger"
 
 	"github.com/bndr/gojenkins"
 	"github.com/tae2089/devops-platform-backend/domain"
@@ -45,7 +46,7 @@ func (j *utilImpl) GetJenkinsFrontFileContent(repository string, branch string, 
 func (j *utilImpl) CreateJob(jobName, folderName, content *string) (*gojenkins.Job, error) {
 	_, err := j.jenkins.CreateJobInFolder(context.Background(), *content, *jobName, *folderName)
 	if err != nil {
-		log.Println(err)
+		logger.Error(err)
 		return nil, err
 	}
 	return nil, nil

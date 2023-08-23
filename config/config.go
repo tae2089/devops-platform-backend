@@ -2,13 +2,14 @@ package config
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path"
 	"runtime"
 
 	"github.com/caarlos0/env/v9"
 	"github.com/joho/godotenv"
+	"github.com/tae2089/bob-logging/logger"
+	"go.uber.org/zap"
 )
 
 type Github struct {
@@ -27,7 +28,7 @@ type SlackBot struct {
 }
 
 type Aws struct {
-	Profiles []string `env: "PROFILES" envSeparator:";"`
+	Profiles []string `env:"PROFILES" envSeparator:";"`
 }
 
 var (
@@ -47,7 +48,7 @@ func init() {
 	}
 
 	if err != nil {
-		log.Println("Error loading.env file")
+		logger.Error(err)
 		return
 	}
 
@@ -65,7 +66,7 @@ func init() {
 	if err = env.Parse(awsConfig); err != nil {
 		panic(err)
 	}
-
+	logger.Info("check data", zap.Any("awsconfig", awsConfig))
 }
 
 func getProjectDir() string {

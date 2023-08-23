@@ -1,11 +1,12 @@
 package handler
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/tae2089/bob-logging/logger"
 	"github.com/tae2089/devops-platform-backend/usecase"
+	"go.uber.org/zap"
 )
 
 type SlackHandler struct {
@@ -22,8 +23,7 @@ func (s *SlackHandler) CallBack(c *gin.Context) {
 
 	switch i.View.PrivateMetadata {
 	case "/back-deploy":
-		log.Println("check slash")
-		log.Println(i.User.ID)
+		logger.Info("check slash", zap.String("userID", i.User.ID))
 	case "/front-deploy":
 		err = s.SlackUsecase.RegistJenkinsFrontJob(i)
 	default:
@@ -32,7 +32,7 @@ func (s *SlackHandler) CallBack(c *gin.Context) {
 	}
 
 	if err != nil {
-		log.Println(err)
+		logger.Error(err)
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
