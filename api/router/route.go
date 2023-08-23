@@ -7,6 +7,7 @@ import (
 	"github.com/tae2089/devops-platform-backend/api/middleware"
 	"github.com/tae2089/devops-platform-backend/config"
 	"github.com/tae2089/devops-platform-backend/usecase"
+	"github.com/tae2089/devops-platform-backend/util/aws"
 	"github.com/tae2089/devops-platform-backend/util/docker"
 	"github.com/tae2089/devops-platform-backend/util/github"
 	"github.com/tae2089/devops-platform-backend/util/jenkins"
@@ -14,6 +15,12 @@ import (
 )
 
 func SetUp(timeout time.Duration, g *gin.Engine) {
+
+	awsUtils := make(map[string]aws.Util)
+
+	for _, profile := range config.GetAwsConfig().Profiles {
+		awsUtils[profile] = aws.NewAwsUtil(profile)
+	}
 
 	jenkinsUtil := jenkins.NewJenkinsUtil(config.GetJenkinsConfig())
 	githubUtil := github.NewGithubUtil(config.GetGithubConfig())
