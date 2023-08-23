@@ -26,10 +26,15 @@ type SlackBot struct {
 	SecretToken string `env:"SLACK_BOT_SECRET_TOKEN,required"`
 }
 
+type Aws struct {
+	Profiles []string `env: "PROFILES" envSeparator:";"`
+}
+
 var (
 	githubConfig   = &Github{}
 	jenkinsConfig  = &Jenkins{}
 	slackBotConfig = &SlackBot{}
+	awsConfig      = &Aws{}
 )
 
 func init() {
@@ -46,14 +51,18 @@ func init() {
 		return
 	}
 
-	if err := env.Parse(githubConfig); err != nil {
+	if err = env.Parse(githubConfig); err != nil {
 		fmt.Printf("err: %+v\n", err)
 	}
-	if err := env.Parse(jenkinsConfig); err != nil {
+	if err = env.Parse(jenkinsConfig); err != nil {
 		panic(err)
 	}
 
-	if err := env.Parse(slackBotConfig); err != nil {
+	if err = env.Parse(slackBotConfig); err != nil {
+		panic(err)
+	}
+
+	if err = env.Parse(awsConfig); err != nil {
 		panic(err)
 	}
 
@@ -76,4 +85,8 @@ func GetJenkinsConfig() *Jenkins {
 
 func GetSlackBotConfig() *SlackBot {
 	return slackBotConfig
+}
+
+func GetAwsConfig() *Aws {
+	return awsConfig
 }
