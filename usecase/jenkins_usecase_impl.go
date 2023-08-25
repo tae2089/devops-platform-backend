@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	goSlack "github.com/slack-go/slack"
+	"github.com/tae2089/devops-platform-backend/domain"
 	"github.com/tae2089/devops-platform-backend/util/github"
 	"github.com/tae2089/devops-platform-backend/util/jenkins"
 	"github.com/tae2089/devops-platform-backend/util/slack"
@@ -28,7 +29,8 @@ func (j *jenkinsUsecaseImpl) RegistJob(request *http.Request) error {
 	var modalRequest goSlack.ModalViewRequest = goSlack.ModalViewRequest{}
 	switch slashCommand.Text {
 	case "front":
-		modalRequest = j.slackUtil.GenerateFrontDeployModal("test1", "test2", "test3")
+		//TODO: necessary using db connection
+		modalRequest = j.slackUtil.GenerateFrontDeployModal(domain.SelectOption{Value: "test", Text: "test-dev"}, domain.SelectOption{Value: "test", Text: "test-stg"}, domain.SelectOption{Value: "test", Text: "test"})
 	case "back":
 		break
 	default:
