@@ -25,7 +25,7 @@ func (s *slackUsecase) RegistJenkinsFrontJob(callback *slack.InteractionCallback
 	jenkinsFileField := callback.View.State.Values["jenkinsfile block"]["jenkinsfile"]
 	jenkinsJobField := callback.View.State.Values["jenkinsjob block"]["jenkinsjob"]
 	content := s.jenkinsUtil.GetJenkinsJobContent(repositoryField.Value, branchField.Value, projectSelect.SelectedOption.Value, webhookField.Value, jenkinsFileField.Value)
-	_, err := s.jenkinsUtil.CreateJob(&jenkinsJobField.Value, &projectSelect.SelectedOption.Value, &content)
+	_, err := s.jenkinsUtil.CreateJob(&jenkinsJobField.Value, &projectSelect.SelectedOption.Text.Text, &content)
 	if err != nil {
 		return err
 	}
