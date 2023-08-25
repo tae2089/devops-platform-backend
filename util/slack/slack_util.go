@@ -6,6 +6,7 @@ import (
 
 	"github.com/slack-go/slack"
 	"github.com/tae2089/devops-platform-backend/config"
+	"github.com/tae2089/devops-platform-backend/domain"
 )
 
 type Util interface {
@@ -18,7 +19,7 @@ type Util interface {
 	PostMessageWithBlocks(channelId string, blocks []slack.Block) error
 	GetDockerCodeBlocks(content string) []slack.Block
 	GetCallbackPayload(payload *string) (*slack.InteractionCallback, error)
-	GenerateFrontDeployModal(projects ...string) slack.ModalViewRequest
+	GenerateFrontDeployModal(options ...domain.SelectOption) slack.ModalViewRequest
 	GetJenkinsJobResultBlocks(content string) []slack.Block
 }
 

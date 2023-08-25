@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/slack-go/slack"
+	"github.com/tae2089/devops-platform-backend/domain"
 )
 
 func (s *slackUtil) GenerateModalRequest() slack.ModalViewRequest {
@@ -67,7 +68,7 @@ func (s *slackUtil) GenerateModalRequest() slack.ModalViewRequest {
 	return modalRequest
 }
 
-func (s *slackUtil) GenerateFrontDeployModal(projects ...string) slack.ModalViewRequest {
+func (s *slackUtil) GenerateFrontDeployModal(projects ...domain.SelectOption) slack.ModalViewRequest {
 	// Create a ModalViewRequest with a header and two inputs
 	titleText := slack.NewTextBlockObject(slack.PlainTextType, "Front 배포", false, false)
 	closeText := slack.NewTextBlockObject(slack.PlainTextType, "취소", false, false)
@@ -150,17 +151,17 @@ func (s *slackUtil) getMultiSelectUser(text, placeholder, actionID, blockID stri
 }
 
 // createOptionBlockObjects - utility function for generating option block objects
-func (s *slackUtil) getExternalSelctOption(options []string, users bool) []*slack.OptionBlockObject {
+func (s *slackUtil) getExternalSelctOption(options []domain.SelectOption, users bool) []*slack.OptionBlockObject {
 	optionBlockObjects := make([]*slack.OptionBlockObject, 0, len(options))
 	var text string
 	for _, o := range options {
 		if users {
-			text = fmt.Sprintf("<@%s>", o)
+			text = fmt.Sprintf("<@%s>", o.Text)
 		} else {
-			text = o
+			text = o.Text
 		}
 		optionText := slack.NewTextBlockObject(slack.PlainTextType, text, false, false)
-		optionBlockObjects = append(optionBlockObjects, slack.NewOptionBlockObject(o, optionText, nil))
+		optionBlockObjects = append(optionBlockObjects, slack.NewOptionBlockObject(o.Value, optionText, nil))
 	}
 	return optionBlockObjects
 }
