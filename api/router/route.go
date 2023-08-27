@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/tae2089/devops-platform-backend/api/middleware"
 	"github.com/tae2089/devops-platform-backend/config"
+	"github.com/tae2089/devops-platform-backend/ent"
 	"github.com/tae2089/devops-platform-backend/usecase"
 	"github.com/tae2089/devops-platform-backend/util/aws"
 	"github.com/tae2089/devops-platform-backend/util/docker"
@@ -14,7 +15,7 @@ import (
 	"github.com/tae2089/devops-platform-backend/util/slack"
 )
 
-func SetUp(timeout time.Duration, g *gin.Engine) {
+func SetUp(client *ent.Client, timeout time.Duration, g *gin.Engine) {
 
 	awsUtils := make(map[string]aws.Util)
 
