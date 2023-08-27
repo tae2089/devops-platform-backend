@@ -19,3 +19,6 @@ docker-compose-run:
 
 docker-compose-only-db:
 	docker compose -f build/cd/docker-compose.postgres.yaml --env-file .env up -d
+
+docker-compose-down:
+	docker compose -f build/cd/docker-compose.yaml --env-file .env down
