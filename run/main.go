@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/lib/pq"
 	"github.com/tae2089/bob-logging/logger"
 	router "github.com/tae2089/devops-platform-backend/api/router"
 	config "github.com/tae2089/devops-platform-backend/config"
