@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+  platform:
+    image: tae2089/devops-platform-backend:1
+    environment:
+      GIN_MODE: "debug"
+      APP_ENV: "development"
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
+      JENKINS_PASSWORD: ${JENKINS_PASSWORD}
+      JENKINS_USER: ${JENKINS_USER}
+      JENKINS_URL: ${JENKINS_URL}
+      SLACK_BOT_ACCESS_TOKEN: ${SLACK_BOT_ACCESS_TOKEN}
+      SLACK_BOT_SECRET_TOKEN: ${SLACK_BOT_SECRET_TOKEN}
+      PROFILES: ${PROFILES}
+      DB_HOST: postgres
+      DB_PORT: ${DB_PORT}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_USER: ${DB_USER}
+      DB_NAME: ${DB_NAME}
+    ports:
+      - "8080:8080"
+  postgres:
+    image: postgres:14
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_PORT: ${DB_PORT}
+      POSTGRES_USER: ${DB_USER}
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    ports:
+      - ${DB_PORT}:5432
