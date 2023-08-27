@@ -21,3 +21,7 @@
 *.pdf
 *.xlsx
 *.env
+
+ent/**/*.go
+!ent/schema/*.go
+postgres-data
