@@ -24,4 +24,5 @@
 
 ent/**/*.go
 !ent/schema/*.go
+!ent/generate.go
 postgres-data
