@@ -1,0 +1,8 @@
+**.env
+.gitignore
+docker-compose.yaml
+build
+.github
+.idea
+makefile
+README.md
