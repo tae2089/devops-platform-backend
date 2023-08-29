@@ -28,3 +28,12 @@ func (j *JenkinsHandler) CreateJob(c *gin.Context) {
 	}
 	c.Status(http.StatusCreated)
 }
+
+func (j *JenkinsHandler) CreateProject(c *gin.Context) {
+	err := j.JenkinsUsecase.RegistProject(c.Request)
+	if err != nil {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+	c.Status(http.StatusCreated)
+}
