@@ -31,7 +31,7 @@ func SetUp(client *ent.Client, timeout time.Duration, g *gin.Engine) {
 	// jenkins router setup
 	jenkinsRouter := g.Group("/jenkins")
 	jenkinsRouter.Use(middleware.VerifySlack())
-	jenkinsUsecase := usecase.NewJenkinsUsecase(slackUtil, jenkinsUtil, githubUtil)
+	jenkinsUsecase := usecase.NewJenkinsUsecase(slackUtil, jenkinsUtil, githubUtil, nil)
 	newJenkinsRouter(timeout, jenkinsRouter, jenkinsUsecase)
 
 	// slack router setup
