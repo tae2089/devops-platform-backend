@@ -21,6 +21,7 @@ type Util interface {
 	GetCallbackPayload(payload *string) (*slack.InteractionCallback, error)
 	GenerateFrontDeployModal(options ...domain.SelectOption) slack.ModalViewRequest
 	GetJenkinsJobResultBlocks(content string) []slack.Block
+	GenerateProjectRegisterModal() slack.ModalViewRequest
 }
 
 var (
