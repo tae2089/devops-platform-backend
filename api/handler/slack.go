@@ -26,6 +26,8 @@ func (s *SlackHandler) CallBack(c *gin.Context) {
 		logger.Info("check slash", zap.String("userID", i.User.ID))
 	case "/front-deploy":
 		err = s.SlackUsecase.RegistJenkinsFrontJob(i)
+	case "/jenkins-project":
+		err = s.SlackUsecase.RegistJenkinsProject(i)
 	default:
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
