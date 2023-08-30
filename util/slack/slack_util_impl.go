@@ -8,11 +8,34 @@ import (
 	"github.com/tae2089/bob-logging/logger"
 )
 
+var _ Util = (*slackUtil)(nil)
+
 type slackUtil struct {
 	client *slack.Client
 }
 
-var _ Util = (*slackUtil)(nil)
+// OpenProjectRegisterModal implements Util.
+func (s *slackUtil) GenerateProjectRegisterModal() slack.ModalViewRequest {
+	// Create a ModalViewRequest with a header and two inputs
+	titleText := slack.NewTextBlockObject(slack.PlainTextType, "Front 배포", false, false)
+	closeText := slack.NewTextBlockObject(slack.PlainTextType, "취소", false, false)
+	submitText := slack.NewTextBlockObject(slack.PlainTextType, "제출", false, false)
+	headerText := slack.NewTextBlockObject(slack.MarkdownType, "Front Web 배포하기", false, false)
+	headerSection := slack.NewSectionBlock(headerText, nil, nil)
+	// job name 입력하기
+	projectNameBlock := s.getPlainTextBlock("생성할 project name을 입력해주세요.", "project name을 입력해주세요.ex) project-name", "projectName", "projectName")
+	projectValueBlock := s.getPlainTextBlock("생성할 project value를 입력해주세요.", "project value를 입력해주세요.ex) project-value", "projectValue", "projectValue")
+	blocks := slack.Blocks{
+		BlockSet: []slack.Block{
+			headerSection,
+			projectNameBlock,
+			projectValueBlock,
+		},
+	}
+	metadata := "/jenkins-project"
+	modalRequest := s.createModalRequest(titleText, closeText, submitText, blocks, metadata)
+	return modalRequest
+}
 
 func (s *slackUtil) OpenView(triggerId string, modalRequest slack.ModalViewRequest) error {
 	_, err := s.client.OpenView(triggerId, modalRequest)
