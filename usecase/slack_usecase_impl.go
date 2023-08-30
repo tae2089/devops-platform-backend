@@ -1,8 +1,12 @@
 package usecase
 
 import (
+	"context"
+	"fmt"
+
 	"github.com/slack-go/slack"
 	"github.com/tae2089/devops-platform-backend/domain"
+	"github.com/tae2089/devops-platform-backend/repository"
 	"github.com/tae2089/devops-platform-backend/util/github"
 	"github.com/tae2089/devops-platform-backend/util/jenkins"
 	slackUtil "github.com/tae2089/devops-platform-backend/util/slack"
@@ -11,9 +15,32 @@ import (
 var _ (SlackUsecase) = (*slackUsecase)(nil)
 
 type slackUsecase struct {
-	slackUtil   slackUtil.Util
-	githubUtil  github.Util
-	jenkinsUtil jenkins.Util
+	slackUtil         slackUtil.Util
+	githubUtil        github.Util
+	jenkinsUtil       jenkins.Util
+	userRepository    repository.UserRepository
+	jenkinsRepository repository.JenkinsRepository
+}
+
+// RegistJenkinsProject implements SlackUsecase.
+func (s *slackUsecase) RegistJenkinsProject(callback *slack.InteractionCallback) error {
+	ctx := context.Background()
+	projectName := callback.View.State.Values["projectName"]["projectName"]
+	projectValue := callback.View.State.Values["projectValue"]["projectValue"]
+	err := s.jenkinsRepository.SaveJenkinsProject(ctx, projectName.Value, projectValue.Value)
+	if err != nil {
+		return err
+	}
+	channelID := callback.Channel.ID
+	if callback.Channel.Name == "" {
+		channelID = callback.User.ID
+	}
+	resultBlocks := s.slackUtil.GetJenkinsJobResultBlocks(fmt.Sprintf("success project registerd - %s", projectName.Value))
+	err = s.slackUtil.PostMessageWithBlocks(channelID, resultBlocks)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // RegistJenkinsFrontJob implements SlackUsecase.
@@ -57,45 +84,3 @@ func (s *slackUsecase) GetCallbackPayload(payload *string) (*slack.InteractionCa
 	}
 	return i, nil
 }
-
-// func (j *jenkinsUsecaseImpl) SaveLunchPayment(i slack.InteractionCallback, token string) error {
-
-// 	payerSelect := i.View.State.Values["payer selector"]["payer_select"]
-// 	userSelect := i.View.State.Values["users selector"]["users_select"]
-// 	restaurantField := i.View.State.Values["Restaurant Name"]["restaurantName"]
-// 	cafeField := i.View.State.Values["Cafe Name"]["cafeName"]
-// 	paymentDateField := i.View.State.Values["Payment Date"]["paymentDate"]
-// 	paymentDate, err := time.Parse("20060102", paymentDateField.Value)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	payerName, err := local.GetUserProfile(payerSelect.SelectedUser)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	users, err := local.GetUsersRealName(userSelect.SelectedUsers...)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	log.Println("users", users)
-// 	participant, err := c.participantRepository.SaveParticipants(users)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	lunchDto := dto.NewLunchDto(payerName, restaurantField.Value, cafeField.Value, paymentDate)
-
-// 	_ = c.lunchRepository.SaveLunchPayment(*lunchDto, participant)
-// 	msg := fmt.Sprintf("%s 님 점심 결제 등록이 정상적으로 완료됐습니다.!", payerName)
-
-// 	err = local.PostMessage(payerSelect.SelectedUser,
-// 		slack.MsgOptionText(msg, false),
-// 		slack.MsgOptionAttachments(),
-// 	)
-
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	return nil
-// }
