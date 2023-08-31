@@ -8,6 +8,7 @@ import (
 
 	goSlack "github.com/slack-go/slack"
 	"github.com/tae2089/devops-platform-backend/domain"
+	"github.com/tae2089/devops-platform-backend/ent"
 	"github.com/tae2089/devops-platform-backend/exception"
 	"github.com/tae2089/devops-platform-backend/repository"
 	"github.com/tae2089/devops-platform-backend/util/github"
@@ -18,10 +19,11 @@ import (
 var _ (JenkinsUsecase) = (*jenkinsUsecaseImpl)(nil)
 
 type jenkinsUsecaseImpl struct {
-	slackUtil      slack.Util
-	jenkinsUtil    jenkins.Util
-	githubUtil     github.Util
-	userRepository repository.UserRepository
+	slackUtil         slack.Util
+	jenkinsUtil       jenkins.Util
+	githubUtil        github.Util
+	userRepository    repository.UserRepository
+	jenkinsRepository repository.JenkinsRepository
 }
 
 // RegisteProject implements JenkinsUsecase.
@@ -51,6 +53,7 @@ func (j *jenkinsUsecaseImpl) RegistProject(request *http.Request) error {
 
 // RegistFrontJob implements JenkinsUsecase.
 func (j *jenkinsUsecaseImpl) RegistJob(request *http.Request) error {
+	ctx := context.Background()
 	slashCommand, err := j.slackUtil.GetSlashCommandParse(request)
 	if err != nil {
 		return err
@@ -59,7 +62,12 @@ func (j *jenkinsUsecaseImpl) RegistJob(request *http.Request) error {
 	switch slashCommand.Text {
 	case "front":
 		//TODO: necessary using db connection
-		modalRequest = j.slackUtil.GenerateFrontDeployModal(domain.SelectOption{Value: "test", Text: "test-dev"}, domain.SelectOption{Value: "test", Text: "test-stg"}, domain.SelectOption{Value: "test", Text: "test"})
+		projects, err := j.jenkinsRepository.FindAll(ctx)
+		if err != nil {
+			return err
+		}
+		selectOptions := getSelectOptions(projects)
+		modalRequest = j.slackUtil.GenerateFrontDeployModal(selectOptions...)
 	case "back":
 		break
 	default:
@@ -71,6 +79,17 @@ func (j *jenkinsUsecaseImpl) RegistJob(request *http.Request) error {
 		return err
 	}
 	return nil
+}
+
+func getSelectOptions(projects []*ent.JenkinsProject) []domain.SelectOption {
+	selectOptions := make([]domain.SelectOption, len(projects))
+	for _, project := range projects {
+		selectOptions = append(selectOptions, domain.SelectOption{
+			Text:  project.ProjectName,
+			Value: project.ProjectValue,
+		})
+	}
+	return selectOptions
 }
 
 // RegisterLunchPayment implements JenkinsUsecase.
