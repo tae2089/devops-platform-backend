@@ -15,11 +15,12 @@ type JenkinsUsecase interface {
 	RegistProject(request *http.Request) error
 }
 
-func NewJenkinsUsecase(slackUtil slack.Util, jenkinsUtil jenkins.Util, githubUtil github.Util, userRepository repository.UserRepository) JenkinsUsecase {
+func NewJenkinsUsecase(slackUtil slack.Util, jenkinsUtil jenkins.Util, githubUtil github.Util, userRepository repository.UserRepository, jeninsRepository repository.JenkinsRepository) JenkinsUsecase {
 	return &jenkinsUsecaseImpl{
 		slackUtil,
 		jenkinsUtil,
 		githubUtil,
 		userRepository,
+		jeninsRepository,
 	}
 }
