@@ -7,6 +7,7 @@ import (
 	"github.com/tae2089/devops-platform-backend/api/middleware"
 	"github.com/tae2089/devops-platform-backend/config"
 	"github.com/tae2089/devops-platform-backend/ent"
+	"github.com/tae2089/devops-platform-backend/repository"
 	"github.com/tae2089/devops-platform-backend/usecase"
 	"github.com/tae2089/devops-platform-backend/util/aws"
 	"github.com/tae2089/devops-platform-backend/util/docker"
@@ -22,23 +23,28 @@ func SetUp(client *ent.Client, timeout time.Duration, g *gin.Engine) {
 	for _, profile := range config.GetAwsConfig().Profiles {
 		awsUtils[profile] = aws.NewAwsUtil(profile)
 	}
-
+	// utils setup
 	jenkinsUtil := jenkins.NewJenkinsUtil(config.GetJenkinsConfig())
 	githubUtil := github.NewGithubUtil(config.GetGithubConfig())
 	slackUtil := slack.NewSlackUtil(config.GetSlackBotConfig())
 	dockerUtil := docker.NewDockerUtil()
 
+	// repository setup
+
+	userRepository := repository.NewUserRepository(client)
+	jenkinsRepository := repository.NewJenkinsRepository(client)
+
 	// jenkins router setup
 	jenkinsRouter := g.Group("/jenkins")
 	jenkinsRouter.Use(middleware.VerifySlack())
-	jenkinsUsecase := usecase.NewJenkinsUsecase(slackUtil, jenkinsUtil, githubUtil, nil)
+	jenkinsUsecase := usecase.NewJenkinsUsecase(slackUtil, jenkinsUtil, githubUtil, userRepository, jenkinsRepository)
 	newJenkinsRouter(timeout, jenkinsRouter, jenkinsUsecase)
 
 	// slack router setup
 
 	slackRouter := g.Group("/slack")
 	slackRouter.Use(middleware.VerifySlack())
-	slackUsecase := usecase.NewSlackUsecase(slackUtil, jenkinsUtil, githubUtil, nil, nil)
+	slackUsecase := usecase.NewSlackUsecase(slackUtil, jenkinsUtil, githubUtil, userRepository, jenkinsRepository)
 	newSlackRouter(timeout, slackRouter, slackUsecase)
 
 	// health router setup
