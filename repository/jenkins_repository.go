@@ -7,6 +7,7 @@ import (
 )
 
 type JenkinsRepository interface {
+	FindAll(ctx context.Context) ([]*ent.JenkinsProject, error)
 	SaveJenkinsProjectTX(ctx context.Context, tx *ent.Tx, projectName string, projectValue string) error
 	SaveJenkinsProject(ctx context.Context, projectName string, projectValue string) error
 	NewTransaction(ctx context.Context) (*ent.Tx, error)
@@ -20,6 +21,15 @@ func NewJenkinsRepository(client *ent.Client) JenkinsRepository {
 
 type jenkinsRepositoryImpl struct {
 	client *ent.Client
+}
+
+// FindAll implements JenkinsRepository.
+func (j *jenkinsRepositoryImpl) FindAll(ctx context.Context) ([]*ent.JenkinsProject, error) {
+	projects, err := j.client.JenkinsProject.Query().All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return projects, nil
 }
 
 // SaveJenkinsProject implements JenkinsRepository.
