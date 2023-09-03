@@ -14,6 +14,31 @@ type slackUtil struct {
 	client *slack.Client
 }
 
+// GenerateGithubWebhookModal implements Util.
+func (s *slackUtil) GenerateGithubWebhookModal() slack.ModalViewRequest {
+	// Create a ModalViewRequest with a header and two inputs
+	titleText := slack.NewTextBlockObject(slack.PlainTextType, "Front 배포", false, false)
+	closeText := slack.NewTextBlockObject(slack.PlainTextType, "취소", false, false)
+	submitText := slack.NewTextBlockObject(slack.PlainTextType, "제출", false, false)
+	headerText := slack.NewTextBlockObject(slack.MarkdownType, "Front Web 배포하기", false, false)
+	headerSection := slack.NewSectionBlock(headerText, nil, nil)
+	// job name 입력하기
+	owner := s.getPlainTextBlock("Owner 이름을 입력해주세요.", "Owner 이름을 입력해주세요. ex) meta, tae2089 ", "owner", "owner")
+	repositoryName := s.getPlainTextBlock("Repository 이름을 입력해주세요.", "Repository 이름을 입력해주세요. ex) project-name", "repositoryName", "repositoryName")
+	jenkinsToken := s.getPlainTextBlock("사용할 webook 주소를 입력해주세요.", "사용할 webook 주소를 입력해주세요. ex) webhook-token", "jenkinsToken", "jenkinsToken")
+	blocks := slack.Blocks{
+		BlockSet: []slack.Block{
+			headerSection,
+			owner,
+			repositoryName,
+			jenkinsToken,
+		},
+	}
+	metadata := "/github-register-webhook"
+	modalRequest := s.createModalRequest(titleText, closeText, submitText, blocks, metadata)
+	return modalRequest
+}
+
 // OpenProjectRegisterModal implements Util.
 func (s *slackUtil) GenerateProjectRegisterModal() slack.ModalViewRequest {
 	// Create a ModalViewRequest with a header and two inputs

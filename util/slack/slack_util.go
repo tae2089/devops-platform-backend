@@ -22,6 +22,7 @@ type Util interface {
 	GenerateFrontDeployModal(options ...domain.SelectOption) slack.ModalViewRequest
 	GetJenkinsJobResultBlocks(content string) []slack.Block
 	GenerateProjectRegisterModal() slack.ModalViewRequest
+	GenerateGithubWebhookModal() slack.ModalViewRequest
 }
 
 var (
