@@ -12,6 +12,7 @@ type SlackUsecase interface {
 	GetCallbackPayload(payload *string) (*slack.InteractionCallback, error)
 	RegistJenkinsFrontJob(callback *slack.InteractionCallback) error
 	RegistJenkinsProject(callback *slack.InteractionCallback) error
+	RegistGithubWebhook(callback *slack.InteractionCallback) error
 }
 
 func NewSlackUsecase(slackUtil slackUtil.Util, jenkinsUtil jenkins.Util, githubUtil github.Util, userRepository repository.UserRepository, jenkinsRepository repository.JenkinsRepository) SlackUsecase {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/slack-go/slack"
+	"github.com/tae2089/devops-platform-backend/config"
 	"github.com/tae2089/devops-platform-backend/domain"
 	"github.com/tae2089/devops-platform-backend/repository"
 	"github.com/tae2089/devops-platform-backend/util/github"
@@ -20,6 +21,27 @@ type slackUsecase struct {
 	jenkinsUtil       jenkins.Util
 	userRepository    repository.UserRepository
 	jenkinsRepository repository.JenkinsRepository
+}
+
+// RegistGithubWebhook implements SlackUsecase.
+func (s *slackUsecase) RegistGithubWebhook(callback *slack.InteractionCallback) error {
+	ctx := context.Background()
+	owner := callback.View.State.Values["owner"]["owner"]
+	repositoryName := callback.View.State.Values["repositoryName"]["repositoryName"]
+	jenkinsToken := callback.View.State.Values["jenkinsToken"]["jenkinsToken"]
+	jenkinsConfig := config.GetJenkinsConfig()
+
+	err := s.githubUtil.RegisterWebhookForJenkins(ctx, &domain.RequestGithubWebhookDto{
+		Owner:     owner.Value,
+		Repo:      repositoryName.Value,
+		Token:     jenkinsToken.Value,
+		TargetUrl: jenkinsConfig.URL,
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // RegistJenkinsProject implements SlackUsecase.
