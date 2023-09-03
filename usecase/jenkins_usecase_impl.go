@@ -42,7 +42,7 @@ func (j *jenkinsUsecaseImpl) RegistProject(request *http.Request) error {
 		return err
 	}
 
-	var modalRequest goSlack.ModalViewRequest = goSlack.ModalViewRequest{}
+	modalRequest := j.slackUtil.GenerateProjectRegisterModal()
 	err = j.slackUtil.OpenView(slashCommand.TriggerID, modalRequest)
 	if err != nil {
 		fmt.Printf("Error opening view: %s", err)
