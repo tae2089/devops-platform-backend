@@ -15,5 +15,5 @@ func newDockerRouter(timeout time.Duration, dockerRouter *gin.RouterGroup, slack
 	dockerHandler := handler.DockerHandler{
 		DockerUsecase: usecase,
 	}
-	dockerRouter.POST("/file", dockerHandler.GetDockerFile)
+	dockerRouter.GET("/file", dockerHandler.GetDockerFile)
 }
