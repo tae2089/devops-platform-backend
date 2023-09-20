@@ -11,33 +11,6 @@ import (
 	"github.com/tae2089/bob-logging/logger"
 )
 
-type Github struct {
-	Token string `env:"GITHUB_TOKEN,required"`
-}
-
-type Jenkins struct {
-	URL      string `env:"JENKINS_URL,required"`
-	User     string `env:"JENKINS_USER,required"`
-	PassWord string `env:"JENKINS_PASSWORD,required"`
-}
-
-type SlackBot struct {
-	AccessToken string `env:"SLACK_BOT_ACCESS_TOKEN,required"`
-	SecretToken string `env:"SLACK_BOT_SECRET_TOKEN,required"`
-}
-
-type Aws struct {
-	Profiles []string `env:"PROFILES" envSeparator:";"`
-}
-
-type DB struct {
-	Port     string `env:"DB_PORT,required"`
-	Host     string `env:"DB_HOST,required"`
-	DBname   string `env:"DB_NAME,required"`
-	Username string `env:"DB_USER,required"`
-	Password string `env:"DB_PASSWORD,required"`
-}
-
 var (
 	githubConfig   = &Github{}
 	jenkinsConfig  = &Jenkins{}
@@ -77,7 +50,7 @@ func init() {
 	if err = env.Parse(dbConfig); err != nil {
 		panic(err)
 	}
-	// logger.Info("check data", zap.Any("awsconfig", awsConfig))
+
 }
 
 func getProjectDir() string {
