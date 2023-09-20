@@ -3,9 +3,7 @@ package docker
 import "sync"
 
 type Util interface {
-	GetJava() string
-	GetGolang() string
-	GetJavaScript() string
+	GetFileByLang(lang string) string
 }
 
 var (

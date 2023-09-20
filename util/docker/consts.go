@@ -10,7 +10,7 @@ const dockerJava = `
 	ENTRYPOINT ["java", "-jar", "app.jar"]
 	`
 const dockerGolang = `
-    FROM golang:1.21.0-alpine3.18 as build
+	FROM golang:1.21.0-alpine3.18 as build
 	RUN apk --no-cache add tzdata ca-certificates
 	WORKDIR /src/
 	COPY . /src/
@@ -22,7 +22,7 @@ const dockerGolang = `
 	COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 	ENV TZ=Asia/Seoul
 	ENTRYPOINT ["/bin/main"]
-    `
+	`
 
 const dockerNode = `
 	FROM node:16 as builder
@@ -37,4 +37,17 @@ const dockerNode = `
 	COPY --from=builder /app/node_modules /app/node_modules
 	USER node
 	CMD ["node", "dist/src/main"]
+	`
+
+const dockerFastAPI = `
+	FROM python:latest
+	
+	WORKDIR /app/
+	
+	COPY ./main.py /app/
+	COPY ./requirements.txt /app/
+	
+	RUN pip install -r requirements.txt
+	
+	CMD uvicorn --host=0.0.0.0 --port 8000 main:app
 	`

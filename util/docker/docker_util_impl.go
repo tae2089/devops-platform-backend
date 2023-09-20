@@ -1,17 +1,21 @@
 package docker
 
-type dockerUtil struct{}
-
 var _ (Util) = (*dockerUtil)(nil)
 
-func (d *dockerUtil) GetJava() string {
-	return dockerJava
-}
+type dockerUtil struct{}
 
-func (d *dockerUtil) GetGolang() string {
-	return dockerGolang
-}
+func (d *dockerUtil) GetFileByLang(lang string) string {
 
-func (d *dockerUtil) GetJavaScript() string {
-	return dockerNode
+	switch lang {
+	case "java":
+		return dockerJava
+	case "node":
+		return dockerNode
+	case "go":
+		return dockerGolang
+	case "fastapi":
+		return dockerFastAPI
+	default:
+		return ""
+	}
 }
