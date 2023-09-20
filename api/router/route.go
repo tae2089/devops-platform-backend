@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/tae2089/devops-platform-backend/api/middleware"
 	"github.com/tae2089/devops-platform-backend/config"
 	"github.com/tae2089/devops-platform-backend/ent"
 	"github.com/tae2089/devops-platform-backend/repository"
@@ -36,14 +35,14 @@ func SetUp(client *ent.Client, timeout time.Duration, g *gin.Engine) {
 
 	// jenkins router setup
 	jenkinsRouter := g.Group("/jenkins")
-	jenkinsRouter.Use(middleware.VerifySlack())
+	//jenkinsRouter.Use(middleware.VerifySlack())
 	jenkinsUsecase := usecase.NewJenkinsUsecase(slackUtil, jenkinsUtil, githubUtil, userRepository, jenkinsRepository)
 	newJenkinsRouter(timeout, jenkinsRouter, jenkinsUsecase)
 
 	// slack router setup
 
 	slackRouter := g.Group("/slack")
-	slackRouter.Use(middleware.VerifySlack())
+	//slackRouter.Use(middleware.VerifySlack())
 	slackUsecase := usecase.NewSlackUsecase(slackUtil, jenkinsUtil, githubUtil, userRepository, jenkinsRepository)
 	newSlackRouter(timeout, slackRouter, slackUsecase)
 
@@ -53,6 +52,6 @@ func SetUp(client *ent.Client, timeout time.Duration, g *gin.Engine) {
 
 	//docker router setup
 	dockerRouter := g.Group("/docker")
-	dockerRouter.Use(middleware.VerifySlack())
+	//dockerRouter.Use(middleware.VerifySlack())
 	newDockerRouter(timeout, dockerRouter, slackUtil, dockerUtil)
 }
