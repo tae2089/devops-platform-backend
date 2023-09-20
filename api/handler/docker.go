@@ -12,10 +12,12 @@ type DockerHandler struct {
 }
 
 func (d *DockerHandler) GetDockerFile(c *gin.Context) {
-	err := d.DockerUsecase.GetDockerFile(c.Request)
-	if err != nil {
+	lang := c.Query("lang")
+	file := d.DockerUsecase.GetDockerFile(lang)
+	if file == "" {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
-	c.Status(http.StatusCreated)
+	//c.JSON(http.StatusOK, gin.H{})
+	c.Data(http.StatusOK, "text/plain", []byte(file))
 }
