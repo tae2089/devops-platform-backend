@@ -1,15 +1,14 @@
 package usecase
 
 import (
-	"github.com/tae2089/devops-platform-backend/util/docker"
-	"github.com/tae2089/devops-platform-backend/util/slack"
 	"strings"
+
+	"github.com/tae2089/devops-platform-backend/util/docker"
 )
 
 var _ (DockerUsecase) = (*dockerUsecase)(nil)
 
 type dockerUsecase struct {
-	slackUtil  slack.Util
 	dockerUtil docker.Util
 }
 

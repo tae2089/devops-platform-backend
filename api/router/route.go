@@ -12,7 +12,6 @@ import (
 	"github.com/tae2089/devops-platform-backend/util/docker"
 	"github.com/tae2089/devops-platform-backend/util/github"
 	"github.com/tae2089/devops-platform-backend/util/jenkins"
-	"github.com/tae2089/devops-platform-backend/util/slack"
 )
 
 func SetUp(client *ent.Client, timeout time.Duration, g *gin.Engine) {
@@ -25,7 +24,6 @@ func SetUp(client *ent.Client, timeout time.Duration, g *gin.Engine) {
 	// utils setup
 	jenkinsUtil := jenkins.NewJenkinsUtil(config.GetJenkinsConfig())
 	githubUtil := github.NewGithubUtil(config.GetGithubConfig())
-	slackUtil := slack.NewSlackUtil(config.GetSlackBotConfig())
 	dockerUtil := docker.NewDockerUtil()
 
 	// repository setup
@@ -36,15 +34,8 @@ func SetUp(client *ent.Client, timeout time.Duration, g *gin.Engine) {
 	// jenkins router setup
 	jenkinsRouter := g.Group("/jenkins")
 	//jenkinsRouter.Use(middleware.VerifySlack())
-	jenkinsUsecase := usecase.NewJenkinsUsecase(slackUtil, jenkinsUtil, githubUtil, userRepository, jenkinsRepository)
+	jenkinsUsecase := usecase.NewJenkinsUsecase(jenkinsUtil, githubUtil, userRepository, jenkinsRepository)
 	newJenkinsRouter(timeout, jenkinsRouter, jenkinsUsecase)
-
-	// slack router setup
-
-	slackRouter := g.Group("/slack")
-	//slackRouter.Use(middleware.VerifySlack())
-	slackUsecase := usecase.NewSlackUsecase(slackUtil, jenkinsUtil, githubUtil, userRepository, jenkinsRepository)
-	newSlackRouter(timeout, slackRouter, slackUsecase)
 
 	// health router setup
 	healthRouter := g.Group("/")
@@ -53,5 +44,5 @@ func SetUp(client *ent.Client, timeout time.Duration, g *gin.Engine) {
 	//docker router setup
 	dockerRouter := g.Group("/docker")
 	//dockerRouter.Use(middleware.VerifySlack())
-	newDockerRouter(timeout, dockerRouter, slackUtil, dockerUtil)
+	newDockerRouter(timeout, dockerRouter, dockerUtil)
 }
